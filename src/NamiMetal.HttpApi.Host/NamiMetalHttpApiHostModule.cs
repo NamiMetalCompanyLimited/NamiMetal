@@ -1,27 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NamiMetal.EntityFrameworkCore;
-using NamiMetal.MultiTenancy;
-using StackExchange.Redis;
 using Microsoft.OpenApi.Models;
+using NamiMetal.EntityFrameworkCore;
+using System;
+using System.IO;
+using System.Linq;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
-using Volo.Abp.Autofac;
-using Volo.Abp.Caching;
-using Volo.Abp.Caching.StackExchangeRedis;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
@@ -31,9 +20,7 @@ namespace NamiMetal;
 
 [DependsOn(
     typeof(NamiMetalHttpApiModule),
-    typeof(AbpAutofacModule),
-    typeof(AbpCachingStackExchangeRedisModule),
-    typeof(AbpAspNetCoreMvcUiMultiTenancyModule),
+    //typeof(AbpCachingStackExchangeRedisModule),
     typeof(NamiMetalApplicationModule),
     typeof(NamiMetalEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
@@ -47,18 +34,13 @@ public class NamiMetalHttpApiHostModule : AbpModule
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
         ConfigureConventionalControllers();
-        ConfigureAuthentication(context, configuration);
+        //ConfigureAuthentication(context, configuration);
         ConfigureLocalization();
-        ConfigureCache(configuration);
+        //ConfigureCache(configuration);
         ConfigureVirtualFileSystem(context);
-        ConfigureDataProtection(context, configuration, hostingEnvironment);
+        //ConfigureDataProtection(context, configuration, hostingEnvironment);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
-    }
-
-    private void ConfigureCache(IConfiguration configuration)
-    {
-        Configure<AbpDistributedCacheOptions>(options => { options.KeyPrefix = "NamiMetal:"; });
     }
 
     private void ConfigureVirtualFileSystem(ServiceConfigurationContext context)
@@ -93,28 +75,12 @@ public class NamiMetalHttpApiHostModule : AbpModule
         });
     }
 
-    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
-    {
-        context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = configuration["AuthServer:Authority"];
-                options.RequireHttpsMetadata = Convert.ToBoolean(configuration["AuthServer:RequireHttpsMetadata"]);
-                options.Audience = "NamiMetal";
-            });
-    }
-
     private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
     {
-        context.Services.AddAbpSwaggerGenWithOAuth(
-            configuration["AuthServer:Authority"],
-            new Dictionary<string, string>
-            {
-                    {"NamiMetal", "NamiMetal API"}
-            },
+        context.Services.AddAbpSwaggerGen(
             options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "NamiMetal API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "NamiMetal API " + context.Services.GetHostingEnvironment().EnvironmentName, Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
             });
@@ -146,19 +112,6 @@ public class NamiMetalHttpApiHostModule : AbpModule
         });
     }
 
-    private void ConfigureDataProtection(
-        ServiceConfigurationContext context,
-        IConfiguration configuration,
-        IWebHostEnvironment hostingEnvironment)
-    {
-        var dataProtectionBuilder = context.Services.AddDataProtection().SetApplicationName("NamiMetal");
-        if (!hostingEnvironment.IsDevelopment())
-        {
-            var redis = ConnectionMultiplexer.Connect(configuration["Redis:Configuration"]);
-            dataProtectionBuilder.PersistKeysToStackExchangeRedis(redis, "NamiMetal-Protection-Keys");
-        }
-    }
-
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
     {
         context.Services.AddCors(options =>
@@ -172,8 +125,8 @@ public class NamiMetalHttpApiHostModule : AbpModule
                             .Select(o => o.RemovePostFix("/"))
                             .ToArray()
                     )
-                    .WithAbpExposedHeaders()
-                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    //.WithAbpExposedHeaders()
+                    //.SetIsOriginAllowedToAllowWildcardSubdomains()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -192,18 +145,13 @@ public class NamiMetalHttpApiHostModule : AbpModule
         }
 
         app.UseAbpRequestLocalization();
-        app.UseCorrelationId();
+        //app.UseCorrelationId();
         app.UseStaticFiles();
         app.UseRouting();
         app.UseCors();
-        app.UseAuthentication();
+        //app.UseAuthentication();
 
-        if (MultiTenancyConsts.IsEnabled)
-        {
-            app.UseMultiTenancy();
-        }
-
-        app.UseAuthorization();
+        //app.UseAuthorization();
 
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>
@@ -211,12 +159,12 @@ public class NamiMetalHttpApiHostModule : AbpModule
             options.SwaggerEndpoint("/swagger/v1/swagger.json", "NamiMetal API");
 
             var configuration = context.GetConfiguration();
-            options.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
-            options.OAuthClientSecret(configuration["AuthServer:SwaggerClientSecret"]);
-            options.OAuthScopes("NamiMetal");
+            //options.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
+            //options.OAuthClientSecret(configuration["AuthServer:SwaggerClientSecret"]);
+            //options.OAuthScopes("NamiMetal");
         });
 
-        app.UseAuditing();
+        //app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseUnitOfWork();
         app.UseConfiguredEndpoints();
