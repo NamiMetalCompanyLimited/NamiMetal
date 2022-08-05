@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.Http.Client;
 using Volo.Abp.Modularity;
 using Volo.Abp.VirtualFileSystem;
 
 namespace NamiMetal;
 
 [DependsOn(
+    typeof(AbpHttpClientModule),
     typeof(NamiMetalApplicationContractsModule)
 )]
 public class NamiMetalHttpApiClientModule : AbpModule

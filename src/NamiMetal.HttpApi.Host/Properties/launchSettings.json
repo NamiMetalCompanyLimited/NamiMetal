@@ -12,7 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "LocalDevelopment"
       }
     },
     "NamiMetal.HttpApi.Host": {
@@ -20,7 +20,7 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:44390",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "LocalDevelopment"
       }
     }
   }

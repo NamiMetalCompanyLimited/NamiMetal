@@ -11,6 +11,7 @@ using System.Linq;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Serilog;
+using Volo.Abp.Autofac;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
@@ -24,7 +25,8 @@ namespace NamiMetal;
     typeof(NamiMetalApplicationModule),
     typeof(NamiMetalEntityFrameworkCoreModule),
     typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpSwashbuckleModule)
+    typeof(AbpSwashbuckleModule),
+    typeof(AbpAutofacModule)
 )]
 public class NamiMetalHttpApiHostModule : AbpModule
 {
@@ -71,7 +73,11 @@ public class NamiMetalHttpApiHostModule : AbpModule
     {
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
-            options.ConventionalControllers.Create(typeof(NamiMetalApplicationModule).Assembly);
+            options.ConventionalControllers.Create(typeof(NamiMetalApplicationModule).Assembly, opts =>
+            {
+                opts.UseV3UrlStyle = true;
+                opts.RootPath = "app";
+            });
         });
     }
 

@@ -16,4 +16,8 @@
     <Content Remove="**\*generate-proxy.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Http.Client" Version="5.3.3" />
+  </ItemGroup>
+
 </Project>

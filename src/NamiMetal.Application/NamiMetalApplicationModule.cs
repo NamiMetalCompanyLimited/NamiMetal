@@ -5,7 +5,8 @@ namespace NamiMetal;
 
 [DependsOn(
     typeof(NamiMetalDomainModule),
-    typeof(NamiMetalApplicationContractsModule)
+    typeof(NamiMetalApplicationContractsModule),
+    typeof(AbpAutoMapperModule)
     )]
 public class NamiMetalApplicationModule : AbpModule
 {
