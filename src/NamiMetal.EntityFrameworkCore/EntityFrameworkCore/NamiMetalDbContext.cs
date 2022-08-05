@@ -43,7 +43,7 @@ public class NamiMetalDbContext :
             e.ConfigureByConvention();
             e.Property<string>(nameof(Category.Name)).IsRequired().HasMaxLength(100);
             e.Property<string>(nameof(Category.Description)).HasMaxLength(250);
-            e.Property<string>(nameof(Category.Status)).HasMaxLength(50);
+            //e.Property<bool>(nameof(Category.Active)).HasMaxLength(50);
             //e.Property<Guid>(nameof(Category.CreatorId));
             //e.Property<DateTime>(nameof(Category.CreationTime));
             //e.Property<Guid>(nameof(Category.LastModifierId));
@@ -59,7 +59,7 @@ public class NamiMetalDbContext :
             e.ConfigureByConvention();
             e.Property<string>(nameof(Collection.Name)).IsRequired().HasMaxLength(100);
             e.Property<string>(nameof(Collection.Description)).HasMaxLength(250);
-            e.Property<string>(nameof(Collection.Status)).HasMaxLength(50);
+            //e.Property<bool>(nameof(Collection.Active)).HasMaxLength(50);
         });
     }
 }

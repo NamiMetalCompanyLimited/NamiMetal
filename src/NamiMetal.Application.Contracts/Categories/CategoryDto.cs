@@ -8,7 +8,7 @@ namespace NamiMetal.Categories
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Status { get; set; }
+        public bool Active { get; set; }
         public Guid? CreatorId { get; set; }
         public DateTime CreationTime { get; set; }
         public Guid? LastModifierId { get; set; }

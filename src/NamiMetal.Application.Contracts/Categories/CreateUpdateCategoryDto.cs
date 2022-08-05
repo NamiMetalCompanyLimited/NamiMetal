@@ -11,7 +11,6 @@ namespace NamiMetal.Categories
 
         public string Description { get; set; }
 
-        [Required]
-        public string Status { get; set; }
+        public bool Active { get; set; }
     }
 }
