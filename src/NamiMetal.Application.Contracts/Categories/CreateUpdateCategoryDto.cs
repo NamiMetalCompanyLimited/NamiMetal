@@ -1,5 +1,4 @@
-﻿using NamiMetal.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace NamiMetal.Categories
 {

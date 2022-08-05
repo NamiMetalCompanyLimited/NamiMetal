@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NamiMetal.Categories;
 using NamiMetal.Collections;
-using NamiMetal.Enums;
 using Volo.Abp.Data;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;

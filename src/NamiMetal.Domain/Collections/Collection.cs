@@ -1,8 +1,6 @@
-﻿using NamiMetal.Enums;
-using System;
+﻿using System;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
-using Volo.Abp.Domain.Entities.Auditing;
 
 namespace NamiMetal.Collections
 {

@@ -1,5 +1,4 @@
-﻿using Shouldly;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xunit;
 
 namespace NamiMetal.Samples;

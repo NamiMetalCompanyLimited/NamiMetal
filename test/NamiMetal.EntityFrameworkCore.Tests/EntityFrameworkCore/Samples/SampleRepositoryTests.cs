@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Shouldly;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Volo.Abp.Domain.Repositories;
+﻿using System.Threading.Tasks;
 using Xunit;
 
 namespace NamiMetal.EntityFrameworkCore.Samples;
