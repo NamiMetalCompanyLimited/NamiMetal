@@ -12,7 +12,7 @@ public class NamiMetalDbContext :
     AbpDbContext<NamiMetalDbContext>
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-    public DbSet<Category> Categories { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Collection> Collections { get; set; }
 
     public NamiMetalDbContext(DbContextOptions<NamiMetalDbContext> options)
@@ -36,12 +36,12 @@ public class NamiMetalDbContext :
         //    //...
         //});
 
-        builder.Entity<Category>(e =>
+        builder.Entity<ProductCategory>(e =>
         {
-            e.ToTable(NamiMetalConsts.DbTablePrefix + nameof(Category), NamiMetalConsts.DbSchema);
+            e.ToTable(NamiMetalConsts.DbTablePrefix + nameof(ProductCategory), NamiMetalConsts.DbSchema);
             e.ConfigureByConvention();
-            e.Property<string>(nameof(Category.Name)).IsRequired().HasMaxLength(100);
-            e.Property<string>(nameof(Category.Description)).HasMaxLength(250);
+            e.Property<string>(nameof(ProductCategory.Name)).IsRequired().HasMaxLength(100);
+            e.Property<string>(nameof(ProductCategory.Description)).HasMaxLength(250);
             //e.Property<bool>(nameof(Category.Active)).HasMaxLength(50);
             //e.Property<Guid>(nameof(Category.CreatorId));
             //e.Property<DateTime>(nameof(Category.CreationTime));

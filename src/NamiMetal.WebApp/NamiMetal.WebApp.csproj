@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>NamiMetal</RootNamespace>
+	<LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+</Project>
