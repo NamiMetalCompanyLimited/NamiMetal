@@ -5,7 +5,8 @@ using Volo.Abp.Modularity;
 namespace NamiMetal.EntityFrameworkCore;
 
 [DependsOn(
-    typeof(NamiMetalDomainModule)
+    typeof(NamiMetalDomainModule),
+    typeof(AbpEntityFrameworkCoreModule)
     )]
 public class NamiMetalEntityFrameworkCoreModule : AbpModule
 {
