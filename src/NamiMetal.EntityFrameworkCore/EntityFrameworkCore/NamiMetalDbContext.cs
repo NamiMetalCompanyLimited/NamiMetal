@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NamiMetal.Categories;
+using NamiMetal.ProductCategories;
 using NamiMetal.Collections;
 using Volo.Abp.Data;
 using Volo.Abp.EntityFrameworkCore;
@@ -50,6 +50,11 @@ public class NamiMetalDbContext :
             //e.Property<bool>(nameof(Category.IsDeleted));
             //e.Property<Guid>(nameof(Category.DeleterId));
             //e.Property<DateTime>(nameof(Category.DeletionTime));
+            e.HasMany(d => d.Childrens)
+            .WithOne(c => c.Parent)
+            .HasForeignKey(d => d.ParentId)
+            //.HasConstraintName("FK_ProductCategory_ProductCategory")
+            ;
         });
 
         builder.Entity<Collection>(e =>

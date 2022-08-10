@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace NamiMetal.Categories
+namespace NamiMetal.ProductCategories
 {
     public class UpdateProductCategoryDto
     {
+        public Guid ParentId { get; set; }
+
         [Required]
         [StringLength(250)]
         public string Name { get; set; }
