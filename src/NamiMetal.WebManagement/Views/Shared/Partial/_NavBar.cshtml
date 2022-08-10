@@ -1,0 +1,41 @@
+﻿@{
+}
+
+<div id="sidebar" class="active">
+    <div class="sidebar-wrapper active border">
+        <div class="sidebar-header">
+            <div class="d-flex justify-content-between">
+                <div class="logo">
+                    <a href="/"><img src="~/assets/images/logo/logo.png" alt="FRTJobs" srcset=""></a>
+                </div>
+                <div class="toggler">
+                    <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="menu">
+                <li class="sidebar-title">Menu</li>
+                <li class="sidebar-item">
+                    <a href="/" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Danh sách hóa đơn</span>
+                    </a>
+                    <a asp-controller="Invoice" asp-action="Report" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Tra cứu hoá đơn tổng hợp</span>
+                    </a>
+                    <a asp-controller="WrongNotice" asp-action="Index" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Tra cứu thông báo sai sót tổng hợp</span>
+                    </a>
+                    <a asp-controller="WrongNotice" asp-action="WrongNoticeList" class="sidebar-link">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Danh sách thông báo sai sót</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+    </div>
+</div>
