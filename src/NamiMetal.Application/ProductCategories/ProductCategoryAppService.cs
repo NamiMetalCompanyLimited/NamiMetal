@@ -14,7 +14,7 @@ namespace NamiMetal.ProductCategories
             ProductCategory,
             ProductCategoryDto,
             Guid,
-            PagedResultRequestDto,
+            SearchProductCategoryDto,
             CreateProductCategoryDto,
             UpdateProductCategoryDto>,
         //ApplicationService,
@@ -34,8 +34,40 @@ namespace NamiMetal.ProductCategories
         //}
 
         public override async Task<ProductCategoryDto> GetAsync([NotNull] Guid id)
+            => ObjectMapper.Map<ProductCategory, ProductCategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens))
+                .FirstOrDefault());
+
+        public override async Task<PagedResultDto<ProductCategoryDto>> GetListAsync(SearchProductCategoryDto input)
         {
-            return ObjectMapper.Map<ProductCategory, ProductCategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens)).FirstOrDefault());
+            var query = await CreateFilteredQueryAsync(input);
+
+            if (!input.Name.IsNullOrWhiteSpace())
+            {
+                query = query.Where(x => x.Name.Contains(input.Name));
+            }
+
+            if (!input.Description.IsNullOrWhiteSpace())
+            {
+                query = query.Where(x => x.Description.Contains(input.Description));
+            }
+
+            if (input.Active.HasValue)
+            {
+                query = query.Where(x => x.Active.Equals(input.Active.Value));
+            }
+
+            var totalCount = await AsyncExecuter.CountAsync(query);
+
+            query = ApplySorting(query, input);
+            query = ApplyPaging(query, input);
+
+            var entities = await AsyncExecuter.ToListAsync(query);
+            var entityDtos = await MapToGetListOutputDtosAsync(entities);
+
+            return new PagedResultDto<ProductCategoryDto>(
+                totalCount,
+                entityDtos
+            );
         }
     }
 }
