@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using NamiMetal.Categories;
+using NamiMetal.ProductCategories;
 
 namespace NamiMetal;
 

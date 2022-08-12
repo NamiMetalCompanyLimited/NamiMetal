@@ -1,6 +1,6 @@
 ﻿using Volo.Abp.Application.Services;
 
-namespace NamiMetal.Categories
+namespace NamiMetal.ProductCategories
 {
     public interface IProductCategoryAppService : IApplicationService
     {
