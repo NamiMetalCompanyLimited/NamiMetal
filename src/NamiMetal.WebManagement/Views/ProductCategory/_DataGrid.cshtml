@@ -16,7 +16,7 @@
                 <td align='center'>" + (item.CreationTime.ToString("HH:mm:ss dd/MM/yyyy")) + @"</td>
                 <td align='center'>" + (item.LastModificationTime?.ToString("HH:mm:ss dd/MM/yyyy")) + @"</td>
                 <td align='center'>
-                    <button type='button' class='btn btn-primary'>
+                    <button type='button' class='btn btn-primary' onclick=""openForm({ id: '" + item.Id + @"' })"">
                         Cập nhật
                     </button>
                     <button type='button' class='btn btn-danger'>

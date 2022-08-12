@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 
 namespace NamiMetal.WebManagement
 {
@@ -26,11 +27,11 @@ namespace NamiMetal.WebManagement
         {
             services
                 .AddControllersWithViews()
-                .AddJsonOptions(x =>
-                {
-                    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                    x.JsonSerializerOptions.MaxDepth = 64;
-                });
+                //.AddJsonOptions(x =>
+                //{
+                //    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                //})
+                ;
 
             services.Configure<RemoteServiceOptions>(Configuration.GetSection(RemoteServiceOptions.SectionName));
         }
@@ -59,7 +60,7 @@ namespace NamiMetal.WebManagement
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=ProductCategory}/{action=Index}/{id?}");
+                    pattern: "{controller=ProductCategory}");
             });
         }
     }

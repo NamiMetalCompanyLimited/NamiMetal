@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace NamiMetal.WebManagement.Controllers
 {
+    [Route("[controller]")]
     public class ProductCategoryController : Controller
     {
         private readonly ILogger<ProductCategoryController> _logger;
@@ -26,14 +27,19 @@ namespace NamiMetal.WebManagement.Controllers
             _remoteServiceOptions = remoteServiceOptions.Value;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpGet]
+        [HttpGet("DataGrid")]
         public async Task<IActionResult> DataGridAsync(SearchProductCategoryDto input)
+        {
+            return PartialView("_DataGrid", await GetPagingProductCategories(input));
+        }
+
+        private async Task<PagedResultDto<ProductCategoryDto>> GetPagingProductCategories(SearchProductCategoryDto input)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
@@ -42,6 +48,7 @@ namespace NamiMetal.WebManagement.Controllers
                 var request = new RestRequest("api/app/productCategory", Method.Get)
                     ;
                 //request.Timeout = 30000;
+                request.AddQueryParameter(nameof(input.Sorting), input.Sorting);
                 request.AddQueryParameter(nameof(input.SkipCount), input.SkipCount);
                 request.AddQueryParameter(nameof(input.MaxResultCount), input.MaxResultCount);
                 request.AddQueryParameter(nameof(input.Name), input.Name);
@@ -66,19 +73,55 @@ namespace NamiMetal.WebManagement.Controllers
                 result = JsonConvert.DeserializeObject<PagedResultDto<ProductCategoryDto>>(response.Content);
             }
 
-            if(result != null)
+            if (result != null)
             {
                 result.SkipCount = input.SkipCount;
                 result.MaxResultCount = input.MaxResultCount;
             }
 
-            return PartialView("_DataGrid", result);
+            return result;
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Form(Guid id)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            ProductCategoryDto result = new ProductCategoryDto();
+
+            ViewBag.ParentProductCategories = await GetPagingProductCategories(new SearchProductCategoryDto
+            {
+                Active = true,
+                SkipCount = 1,
+                MaxResultCount = 999999,
+                Sorting = "CreationTime"
+            });
+
+            if (id.Equals(Guid.Empty))
+            {
+                return PartialView("_Form", result);
+            }
+
+            var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
+            RestResponse response = null;
+            try
+            {
+                var request = new RestRequest($"api/app/productCategory/{id}", Method.Get)
+                    ;
+                //request.Timeout = 30000;
+
+                response = await client.ExecuteAsync(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.ToString());
+            }
+
+
+            if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
+            {
+                result = JsonConvert.DeserializeObject<ProductCategoryDto>(response.Content);
+            }
+
+            return PartialView("_Form", result);
         }
     }
 }

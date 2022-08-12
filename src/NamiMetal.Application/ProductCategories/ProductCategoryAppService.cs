@@ -34,8 +34,9 @@ namespace NamiMetal.ProductCategories
         //}
 
         public override async Task<ProductCategoryDto> GetAsync([NotNull] Guid id)
-            => ObjectMapper.Map<ProductCategory, ProductCategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens))
-                .FirstOrDefault());
+         => ObjectMapper.Map<ProductCategory, ProductCategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens))
+             .Where(x => x.Id.Equals(id))
+             .FirstOrDefault());
 
         public override async Task<PagedResultDto<ProductCategoryDto>> GetListAsync(SearchProductCategoryDto input)
         {
