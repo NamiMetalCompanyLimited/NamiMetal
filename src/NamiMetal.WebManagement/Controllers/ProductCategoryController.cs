@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NamiMetal.Application.Dtos;
 using NamiMetal.ProductCategories;
 using NamiMetal.WebManagement.Models;
 using Newtonsoft.Json;
@@ -8,7 +9,6 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -32,24 +32,21 @@ namespace NamiMetal.WebManagement.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Index(SearchProductCategoryDto input)
+        [HttpGet]
+        public async Task<IActionResult> DataGridAsync(SearchProductCategoryDto input)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
             try
             {
-                var request = new RestRequest("", Method.Get)
+                var request = new RestRequest("api/app/productCategory", Method.Get)
                     ;
                 //request.Timeout = 30000;
-                request.AddQueryParameter(nameof(input.PageIndex), input.PageIndex);
-                request.AddQueryParameter(nameof(input.PageSize), input.PageSize);
-                request.AddQueryParameter(nameof(input.SOCodeKeyword), input.SOCodeKeyword);
-                request.AddQueryParameter(nameof(input.InvoiceKeyWord), input.InvoiceKeyWord);
-                request.AddQueryParameter(nameof(input.SellerTaxCodeKeyWord), input.SellerTaxCodeKeyWord);
-                request.AddQueryParameter(nameof(input.Status), input.Status);
-                request.AddQueryParameter(nameof(input.FromDate), input.FromDate.HasValue ? input.FromDate.Value.ToString() : string.Empty);
-                request.AddQueryParameter(nameof(input.ToDate), input.ToDate.HasValue ? input.ToDate.Value.ToString() : string.Empty);
+                request.AddQueryParameter(nameof(input.SkipCount), input.SkipCount);
+                request.AddQueryParameter(nameof(input.MaxResultCount), input.MaxResultCount);
+                request.AddQueryParameter(nameof(input.Name), input.Name);
+                request.AddQueryParameter(nameof(input.Description), input.Description);
+                request.AddQueryParameter(nameof(input.Active), input.Active?.ToString());
 
                 response = await client.ExecuteAsync(request);
             }
@@ -58,16 +55,24 @@ namespace NamiMetal.WebManagement.Controllers
                 _logger.LogError(ex, ex.ToString());
             }
 
-            BasePagedList<InvoiceDataList> result = new BasePagedList<InvoiceDataList>(null, 0, 0, 0);
+            PagedResultDto<ProductCategoryDto> result = new PagedResultDto<ProductCategoryDto>
+            {
+                Items = new List<ProductCategoryDto>(),
+                TotalCount = 0
+            };
 
-            _logger.LogInformation("ReportGridAsync API response");
-            _logger.LogInformation(JsonConvert.SerializeObject(response));
             if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
             {
-                result = JsonConvert.DeserializeObject<BasePagedList<InvoiceDataList>>(response.Content);
+                result = JsonConvert.DeserializeObject<PagedResultDto<ProductCategoryDto>>(response.Content);
             }
 
-            return PartialView("_ReportGrid", result);
+            if(result != null)
+            {
+                result.SkipCount = input.SkipCount;
+                result.MaxResultCount = input.MaxResultCount;
+            }
+
+            return PartialView("_DataGrid", result);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -3,8 +3,8 @@
 }
 
 @section Styles {
-<style type="text/css">
-</style>
+    <style type="text/css">
+    </style>
 }
 
 <div class="page-heading">
@@ -43,28 +43,10 @@
                         <div class="row">
                             <div class="col-md-3 col-12">
                                 <div class="form-group">
-                                    <label for="school-name-column">SO Code</label>
+                                    <label for="school-name-column">Tên</label>
                                     <div class="position-relative">
-                                        <input type="text" id="searchSOCode" class="form-control"
-                                               placeholder="Nhập mã SO muốn tìm" name="school-name">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-12">
-                                <div class="form-group">
-                                    <label for="school-name-column">Mã số thuế</label>
-                                    <div class="position-relative">
-                                        <input type="text" id="searchSellerTaxCode" class="form-control"
-                                               placeholder="Nhập mã số thuế muốn tìm" name="school-name">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-12">
-                                <div class="form-group">
-                                    <label for="school-name-column">Số hóa đơn</label>
-                                    <div class="position-relative">
-                                        <input type="text" id="searchInvoiceNo" class="form-control"
-                                               placeholder="Nhập số hóa đơn muốn tìm" name="school-name">
+                                        <input type="text" id="searchName" class="form-control"
+                                               placeholder="Nhập danh mục muốn tìm" name="school-name">
                                     </div>
                                 </div>
                             </div>
@@ -74,30 +56,25 @@
                                     <div class="position-relative">
                                         <select class="form-select" id="searchStatus">
                                             <option value="" selected>--Chọn trạng thái--</option>
-                                            <option value="RECEIVED_DATA_FROM_POS">Đã nhận dữ liệu từ POS</option>
-                                            <option value="SENT_TO_TVAN">Đã gửi lên TVAN</option>
-                                            <option value="TVAN_SEND_FAILED">Gửi lên TVAN không thành công</option>
-                                            <option value="GDT_INVOICE_VALID">TCT thông báo hóa đơn hợp lệ</option>
-                                            <option value="GDT_INVOICE_INVALID">TCT thông báo hóa đơn không hợp lệ</option>
-                                            <option value="INV_RECEIVED_AND_WAITING_FOR_INVOICE">Đã nhận hóa đơn từ POS nhưng chưa có hóa đơn gốc</option>
-                                            <option value="UNKNOWN">Không xác định</option>
+                                            <option value="true">Đang sử dụng</option>
+                                            <option value="false">Không sử dụng</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-12">
                                 <div class="form-group">
-                                    <label for="school-name-column">Từ ngày (*)</label>
+                                    <label for="school-name-column">Thời gian tạo</label>
                                     <div class="position-relative">
-                                        <input type="date" id="fromDate" class="form-control">
+                                        <input type="date" id="creationTime" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-12">
                                 <div class="form-group">
-                                    <label for="school-name-column">Đến ngày (*)</label>
+                                    <label for="school-name-column">Cập nhật lần cuối</label>
                                     <div class="position-relative">
-                                        <input type="date" id="toDate" class="form-control">
+                                        <input type="date" id="lastModificationTime" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -123,9 +100,9 @@
     <!-- Striped rows start -->
     <section class="section">
         <div class="card border">
-            @*<div class="card-header d-flex align-items-center">
+            <div class="card-header d-flex align-items-center">
                 <h4 class="card-title m-0">Danh sách hóa đơn</h4>
-                </div>*@
+                </div>
             @*<div class="card-body"></div>*@
             <div id="dataTable" style="min-height: 100px;">
             </div>
@@ -160,8 +137,8 @@
     let $searchStatus;
     let $detailModal;
     let detailModalInstance;
-    let PageIndex = 1;
-    let PageSize = 10;
+    let SkipCount = 1;
+    let MaxResultCount = 10;
     let pagingAjaxInstance;
     let detailAjaxInstance;
 
@@ -189,18 +166,20 @@
         getPaging();
     });
 
-    function getPaging({ index, size } = { index: PageIndex, size: PageSize }) {
+    function getPaging({ index, size } = { index: SkipCount, size: MaxResultCount }) {
         pagingAjaxInstance && pagingAjaxInstance.abort();
         pagingAjaxInstance = null;
 
-        PageIndex = index || PageIndex;
-        PageSize = size || PageSize;
+        SkipCount = index || SkipCount;
+        MaxResultCount = size || MaxResultCount;
 
         let payload = {
+            SkipCount,
+            MaxResultCount
         };
 
         pagingAjaxInstance = $.ajax({
-            url: `/Invoice/ReportGrid`,
+            url: `ProductCategory/DataGrid`,
             method: "GET",
             data: payload,
             beforeSend: () => {

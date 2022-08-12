@@ -39,6 +39,20 @@ namespace NamiMetal.ProductCategories
 
         public override async Task<PagedResultDto<ProductCategoryDto>> GetListAsync(SearchProductCategoryDto input)
         {
+            if (input.MaxResultCount <= 0)
+            {
+                input.MaxResultCount = 10;
+            }
+
+            //Check currentPage
+            if (input.SkipCount <= 0)
+            {
+                input.SkipCount = 1;
+            }
+
+            int skipCount = input.SkipCount;
+            input.SkipCount = (input.SkipCount - 1) * input.MaxResultCount;
+
             var query = await CreateFilteredQueryAsync(input);
 
             if (!input.Name.IsNullOrWhiteSpace())
@@ -56,16 +70,17 @@ namespace NamiMetal.ProductCategories
                 query = query.Where(x => x.Active.Equals(input.Active.Value));
             }
 
-            var totalCount = await AsyncExecuter.CountAsync(query);
+            //var totalCount = await AsyncExecuter.CountAsync(query);
 
             query = ApplySorting(query, input);
             query = ApplyPaging(query, input);
 
             var entities = await AsyncExecuter.ToListAsync(query);
+            entities = entities.Where(x => x.ParentId.Equals(null) || x.ParentId.Equals(Guid.Empty)).ToList();
             var entityDtos = await MapToGetListOutputDtosAsync(entities);
-
             return new PagedResultDto<ProductCategoryDto>(
-                totalCount,
+                //totalCount,
+                entityDtos.Count(),
                 entityDtos
             );
         }
