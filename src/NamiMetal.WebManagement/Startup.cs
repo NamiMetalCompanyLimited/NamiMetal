@@ -31,6 +31,8 @@ namespace NamiMetal.WebManagement
                     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                     x.JsonSerializerOptions.MaxDepth = 64;
                 });
+
+            services.Configure<RemoteServiceOptions>(Configuration.GetSection(RemoteServiceOptions.SectionName));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,100 @@
+﻿@using NamiMetal.Application.Dtos
+@using NamiMetal.ProductCategories
+@model PagedResultDto<ProductCategoryDto>
+@functions {
+    public string GenerateCategoryTableRow(ProductCategoryDto item, int level)
+    {
+        var html = @"<tr>
+                <td align='center'>" + (level == 1 ? Model.OrderNum++ : "") + @"</td>
+                <td align='left'>"
+                + @"<div " + (level > 1 ? "style='margin-left: " + level + @"0px;'" : "")
+                + @"><i style='line-height: 0 !important;' class='bi bi-" + (item.Childrens.Count() > 0 ? "folder" : "file-earmark") + " align-middle'></i> "
+                + @"<span class='align-middle'>" + item.Name + @"</span>"
+                + @"</div>"
+                + @"</td>
+                <td align='center'>" + (item.Active ? "Đang" : "Không") + " sử dụng" + @"</td>
+                <td align='center'>" + (item.CreationTime.ToString("HH:mm:ss dd/MM/yyyy")) + @"</td>
+                <td align='center'>" + (item.LastModificationTime?.ToString("HH:mm:ss dd/MM/yyyy")) + @"</td>
+                <td align='center'>
+                    <button type='button' class='btn btn-primary'>
+                        Cập nhật
+                    </button>
+                    <button type='button' class='btn btn-danger'>
+                        Xóa
+                    </button>
+                </td>
+            </tr>
+            ";
+        if (item.Childrens != null && item.Childrens.Count() > 0)
+        {
+            level++;
+            foreach (var child in item.Childrens)
+            {
+                html += GenerateCategoryTableRow(child, level);
+            }
+        }
+        return html;
+    }
+}
+<!-- table striped -->
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover mb-0">
+        <thead>
+            <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Tên</th>
+                <th class="text-center">Trạng thái</th>
+                <th class="text-center">Thời gian tạo</th>
+                <th class="text-center">Cập nhật lần cuối</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model.Items ?? new List<ProductCategoryDto>())
+            {
+                @Html.Raw(GenerateCategoryTableRow(category, 1))
+            }
+        </tbody>
+    </table>
+</div>
+<!-- end table striped -->
+<div class="row p-1">
+    <div class="col-12">
+        <div class="float-right d-inline-flex align-items-center">
+            <label class="text-nowrap">Hiển thị</label>
+            <select class="form-select mx-2" role="button" onchange="getPaging({ index: 1, size: this.value });">
+                @foreach (var i in new int[] { 5, 10, 20, 50, 100 })
+                {
+                    @Html.Raw($"<option value=\"{i}\" {Html.Raw(Model.MaxResultCount == i ? "selected" : "")}>{i}</option>")
+                }
+            </select>
+            <label class="text-nowrap">bản ghi / @Html.Raw(Model.TotalCount) bản ghi</label>
+        </div>
+        <div class="float-end">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-primary m-0">
+                    <li class="page-item @Html.Raw(Model.SkipCount > 1 ? "" : "disabled")">
+                        <a class="page-link" onclick="getPaging({ index: 1 })">Đầu</a>
+                    </li>
+                    <li class="page-item @Html.Raw(Model.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link" onclick="getPaging({ index: @(Model.SkipCount - 1) })"><</a>
+                    </li>
+                    @if (Model.SkipCount > 1)
+                    {
+                        <li class="page-item"><a class="page-link" onclick="getPaging({ index: @(Model.SkipCount - 1) })">@Html.Raw(Model.SkipCount - 1)</a></li>
+                    }
+                    <li class="page-item disabled"><a class="page-link">@Html.Raw(Model.SkipCount)</a></li>
+                    @if (Model.SkipCount < Model.TotalCount)
+                    {
+                        <li class="page-item"><a class="page-link" onclick="getPaging({ index: @(Model.SkipCount + 1) })">@Html.Raw(Model.SkipCount + 1)</a></li>
+                    }
+                    <li class="page-item  @Html.Raw(Model.HasNextPage ? "" : "disabled")">
+                        <a class="page-link" onclick="getPaging({ index: @(Model.SkipCount + 1) })">></a>
+                    </li>
+                    <li class="page-item @Html.Raw(Model.SkipCount < Model.TotalCount ? "" : "disabled")">
+                        <a class="page-link" onclick="getPaging({ index: @Model.TotalCount })">Cuối</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
