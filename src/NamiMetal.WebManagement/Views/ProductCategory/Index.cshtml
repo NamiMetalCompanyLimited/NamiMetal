@@ -3,219 +3,267 @@
 }
 
 @section Styles {
-    <style type="text/css">
-    </style>
+<style type="text/css">
+</style>
 }
 
-    <div class="page-heading">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>@Html.Raw(ViewBag.Title)</h3>
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>@Html.Raw(ViewBag.Title)</h3>
 
-                </div>
-                <div class="col-12 col-md-6 order-md-2 order-first">
-                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <ol class="breadcrumb">
-                            @*<li class="breadcrumb-item"><a href="javascript:;">Dữ liệu cơ bản (v2)</a></li>*@
-                            @*<li class="breadcrumb-item active" aria-current="page">Quản lý trường học (v2)</li>*@
-                        </ol>
-                    </nav>
-                </div>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        @*<li class="breadcrumb-item"><a href="javascript:;">Dữ liệu cơ bản (v2)</a></li>*@
+                        @*<li class="breadcrumb-item active" aria-current="page">Quản lý trường học (v2)</li>*@
+                    </ol>
+                </nav>
             </div>
         </div>
-        <section class="section">
-            <div class="card border">
-                <div class="card-header d-flex align-items-center">
-                    <h4 class="card-title m-0">Tìm kiếm</h4>
-                    <button class="btn ms-auto"
+    </div>
+    <section class="section">
+        <div class="card border">
+            <div class="card-header d-flex align-items-center">
+                <h4 class="card-title m-0">Tìm kiếm</h4>
+                <button class="btn ms-auto"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#search"
                         aria-expanded="true"
                         aria-controls="search">
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                </div>
-                <div class="card-content show" id="search">
-                    <div class="card-body">
-                        <form id="searchForm" class="form">
-                            <div class="row">
-                                <div class="col-md-3 col-12">
-                                    <div class="form-group">
-                                        <label for="school-name-column">Tên</label>
-                                        <div class="position-relative">
-                                            <input type="text" id="searchName" class="form-control"
+                    <i class="fa fa-angle-down"></i>
+                </button>
+            </div>
+            <div class="card-content show" id="search">
+                <div class="card-body">
+                    <form id="searchForm" class="form">
+                        <div class="row">
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="searchName">Tên</label>
+                                    <div class="position-relative">
+                                        <input type="text" id="searchName" class="form-control"
                                                placeholder="Nhập danh mục muốn tìm" name="school-name">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-12">
-                                    <div class="form-group has-icon-left">
-                                        <label for="school-name-column">Trạng thái</label>
-                                        <div class="position-relative">
-                                            <select class="form-select" id="searchStatus">
-                                                <option value="" selected>--Chọn trạng thái--</option>
-                                                <option value="true">Đang sử dụng</option>
-                                                <option value="false">Không sử dụng</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-12">
-                                    <div class="form-group">
-                                        <label for="school-name-column">Thời gian tạo</label>
-                                        <div class="position-relative">
-                                            <input type="date" id="creationTime" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-12">
-                                    <div class="form-group">
-                                        <label for="school-name-column">Cập nhật lần cuối</label>
-                                        <div class="position-relative">
-                                            <input type="date" id="lastModificationTime" class="form-control">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-12 d-flex justify-content-end">
-                                    <button type="submit"
+                            <div class="col-md-3 col-12">
+                                <div class="form-group has-icon-left">
+                                    <label for="searchStatus">Trạng thái</label>
+                                    <div class="position-relative">
+                                        <select class="form-select" id="searchStatus">
+                                            <option value="" selected>--Chọn trạng thái--</option>
+                                            <option value="1">Đang sử dụng</option>
+                                            <option value="0">Không sử dụng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="searchCreationTime">Thời gian tạo</label>
+                                    <div class="position-relative">
+                                        <input type="date" id="searchCreationTime" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="searchLastModificationTime">Cập nhật lần cuối</label>
+                                    <div class="position-relative">
+                                        <input type="date" id="searchLastModificationTime" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="submit"
                                         class="btn btn-primary me-1 mb-1">
-                                        Tìm kiếm
-                                    </button>
-                                    @*<button type="reset"
-                                class="btn btn-light-secondary me-1 mb-1">
-                                Reset
-                                </button>*@
-                                </div>
+                                    Tìm kiếm
+                                </button>
+                                @*<button type="reset"
+                                    class="btn btn-light-secondary me-1 mb-1">
+                                    Reset
+                                    </button>*@
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
-            </div>
-        </section>
-
-        <!-- Striped rows start -->
-        <section class="section">
-            <div class="card border">
-                <div class="card-header d-flex align-items-center">
-                    <div class="d-flex justify-content-between w-100">
-                        <h4 class="card-title m-0">Danh sách danh mục</h4>
-                        <button type="button" class="btn btn-primary" onclick="openForm({ id: '@Html.Raw(Guid.Empty)' })">Thêm mới</button>
-                    </div>
-                </div>
-                @*<div class="card-body"></div>*@
-                <div id="dataTable" style="min-height: 100px;">
-                </div>
-            </div>
-        </section>
-        <!-- Striped rows end -->
-    </div>
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" style="max-width: 90%;">
-            <div class="modal-content">
             </div>
         </div>
+    </section>
+
+    <!-- Striped rows start -->
+    <section class="section">
+        <div class="card border">
+            <div class="card-header d-flex align-items-center">
+                <div class="d-flex justify-content-between w-100">
+                    <h4 class="card-title m-0">Danh sách danh mục</h4>
+                    <button type="button" class="btn btn-primary" onclick="openForm({ id: '@Html.Raw(Guid.Empty)' })">Thêm mới</button>
+                </div>
+            </div>
+            @*<div class="card-body"></div>*@
+            <div id="dataTable" style="min-height: 100px;">
+            </div>
+        </div>
+    </section>
+    <!-- Striped rows end -->
+</div>
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 90%;">
+        <div class="modal-content">
+        </div>
     </div>
+</div>
 
-    @section Scripts {
-    <script type="text/javascript">
-        let $dataTable;
-        let $searchName;
-        let $searchActive;
-        let $searchCreationTime;
-        let $searchLastModificationTime;
-        let $detailModal;
-        let detailModalInstance;
-        let SkipCount = 1;
-        let MaxResultCount = 10;
-        let pagingAjaxInstance;
-        let detailAjaxInstance;
+@section Scripts {
+<script type="text/javascript">
+    let $dataTable;
+    let $searchName;
+    let $searchActive;
+    let $searchCreationTime;
+    let $searchLastModificationTime;
+    let $detailModal;
+    let detailModalInstance;
+    let SkipCount = 1;
+    let MaxResultCount = 10;
+    let pagingAjaxInstance;
+    let detailAjaxInstance;
 
-        $(document).ready(function() {
-            $dataTable = $("#dataTable");
+    $(document).ready(function() {
+        $dataTable = $("#dataTable");
+        $searchName = $("#searchName");
+        $searchActive = $("#searchStatus");
+        $searchCreationTime = $("#searchCreationTime");
+        $searchLastModificationTime = $("#searchLastModificationTime");
 
-            $searchForm = $("#searchForm");
-            $detailModal = $("#detailModal");
-            detailModalInstance = new bootstrap.Modal(document.getElementById('detailModal'), {
-                backdrop: 'static',
-                keyboard: true,
-            });
-
-            $detailModal.on("hide.bs.modal", function(e) {
-                detailAjaxInstance && detailAjaxInstance.abort();
-                detailAjaxInstance = null;
-            });
-
-            $(document).unbind().on("submit", "form", function(e) {
-                e.preventDefault();
-
-                getPaging({ index: 1 });
-            });
-
-            getPaging();
+        $searchForm = $("#searchForm");
+        $detailModal = $("#detailModal");
+        detailModalInstance = new bootstrap.Modal(document.getElementById('detailModal'), {
+            backdrop: 'static',
+            keyboard: true,
         });
 
-        function getPaging({ index, size } = { index: SkipCount, size: MaxResultCount }) {
-            pagingAjaxInstance && pagingAjaxInstance.abort();
-            pagingAjaxInstance = null;
+        $detailModal.on("hide.bs.modal", function(e) {
+            detailAjaxInstance && detailAjaxInstance.abort();
+            detailAjaxInstance = null;
+        });
 
-            SkipCount = index || SkipCount;
-            MaxResultCount = size || MaxResultCount;
+        $(document).unbind().on("submit", "#searchForm", function(e) {
+            e.preventDefault();
 
-            let payload = {
-                SkipCount,
-                MaxResultCount
-            };
+            getPaging({ index: 1 });
+        });
 
-            pagingAjaxInstance = $.ajax({
-                url: `ProductCategory/DataGrid`,
-                method: "GET",
-                data: payload,
-                beforeSend: () => {
-                    $dataTable.FLoading("show");
-                },
-                success: result => {
-                    $dataTable
-                        .empty()
-                        .append(result)
-                        //.find(".choices")
-                        //.each((i, e) => {
-                        //    new Choices(e, {
-                        //        itemSelectText: "Bấm để chọn",
-                        //        loadingText: 'Đang tải...',
-                        //        noResultsText: 'Không tìm thấy kết quả',
-                        //        noChoicesText: 'Không có dữ liệu',
-                        //    });
-                        //})
-                        ;
-                }
-            })
-                .always(() => {
-                    $dataTable.FLoading("hide");
-                });
-        }
+        getPaging();
+    });
 
+    function getPaging({ index, size } = { index: SkipCount, size: MaxResultCount }) {
+        pagingAjaxInstance && pagingAjaxInstance.abort();
+        pagingAjaxInstance = null;
 
-        function openForm({ id }) {
-            detailModalInstance.show();
+        SkipCount = index || SkipCount;
+        MaxResultCount = size || MaxResultCount;
 
-            detailAjaxInstance = $.ajax({
-                url: `ProductCategory/${id}`,
-                method: "GET",
-                beforeSend: () => {
-                    //$detailModal.FLoading("show");
-                    //$detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
-                },
-                success: result => {
-                    $detailModal.find(".modal-content").empty().append(result);
-                }
-            })
-                .always(() => {
-                    //$detailModal.FLoading("hide");
-                });
-        }
-    </script>
+        let payload = {
+            SkipCount,
+            MaxResultCount,
+            Name: $.trim($searchName.val()).length > 0 ? $.trim($searchName.val()) : "",
+            Active: $.trim($searchActive.val()).length > 0 ? $.trim($searchActive.val()) : "",
+            CreationTime: $.trim($searchCreationTime.val()).length > 0 ? $.trim($searchCreationTime.val()) : "",
+            LastModificationTime: $.trim($searchLastModificationTime.val()).length > 0 ? $.trim($searchLastModificationTime.val()) : "",
+        };
+
+        pagingAjaxInstance = $.ajax({
+            url: `ProductCategory/DataGrid`,
+            method: "GET",
+            data: payload,
+            beforeSend: () => {
+                $dataTable.FLoading("show");
+            },
+            success: result => {
+                $dataTable
+                    .empty()
+                    .append(result)
+                    //.find(".choices")
+                    //.each((i, e) => {
+                    //    new Choices(e, {
+                    //        itemSelectText: "Bấm để chọn",
+                    //        loadingText: 'Đang tải...',
+                    //        noResultsText: 'Không tìm thấy kết quả',
+                    //        noChoicesText: 'Không có dữ liệu',
+                    //    });
+                    //})
+                    ;
+            }
+        })
+            .always(() => {
+                $dataTable.FLoading("hide");
+            });
+    }
+
+    function openForm({ id }) {
+        detailAjaxInstance = $.ajax({
+            url: `ProductCategory/${id}`,
+            method: "GET",
+            beforeSend: () => {
+                $("#main").FLoading("show");
+                //$detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
+            },
+            success: result => {
+                $detailModal.find(".modal-content").empty().append(result);
+                detailModalInstance.show();
+            }
+        })
+            .always(() => {
+                $("#main").FLoading("hide");
+            });
+    }
+
+    function saveForm({ id }) {
+        $.ajax({
+            url: id.length > 0 ? `ProductCategory/${id}` : `ProductCategory`,
+            method: id.length > 0 ? "PUT" : "POST",
+            data: $(this).serialize(),
+            beforeSend: () => {
+                //$detailModal.FLoading("show");
+                //$detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
+            },
+            success: result => {
+                detailModalInstance.hide();
+                getPaging();
+            },
+            error: error => {
+                alert("Lỗi không thực hiện được thao tác");
+            }
+        })
+            .always(() => {
+                //$detailModal.FLoading("hide");
+            });
+    }
+
+    function deleteItem({ id }) {
+        $.ajax({
+            url: `ProductCategory/${id}`,
+            method: "DELETE",
+            beforeSend: () => {
+                //$detailModal.FLoading("show");
+                //$detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
+            },
+            success: result => {
+                getPaging();
+            },
+            error: error => {
+                alert("Lỗi không thực hiện được thao tác");
+            }
+        })
+            .always(() => {
+                //$detailModal.FLoading("hide");
+            });
+    }
+</script>
 }

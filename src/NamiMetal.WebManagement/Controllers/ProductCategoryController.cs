@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace NamiMetal.WebManagement.Controllers
 {
-    [Route("[controller]")]
+    [Route("ProductCategory")]
     public class ProductCategoryController : Controller
     {
         private readonly ILogger<ProductCategoryController> _logger;
@@ -49,7 +49,7 @@ namespace NamiMetal.WebManagement.Controllers
                     ;
                 //request.Timeout = 30000;
                 request.AddQueryParameter(nameof(input.Sorting), input.Sorting);
-                request.AddQueryParameter(nameof(input.SkipCount), input.SkipCount);
+                request.AddQueryParameter(nameof(input.SkipCount), (input.SkipCount - 1) * input.MaxResultCount);
                 request.AddQueryParameter(nameof(input.MaxResultCount), input.MaxResultCount);
                 request.AddQueryParameter(nameof(input.Name), input.Name);
                 request.AddQueryParameter(nameof(input.Description), input.Description);
@@ -122,6 +122,91 @@ namespace NamiMetal.WebManagement.Controllers
             }
 
             return PartialView("_Form", result);
+        }
+
+        [HttpPost("")]
+        public async Task<IActionResult> Create(CreateProductCategoryDto dto)
+        {
+            var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
+            RestResponse response = null;
+            try
+            {
+                var request = new RestRequest("api/app/productCategory/", Method.Post)
+                    .AddJsonBody(dto)
+                    ;
+                //request.Timeout = 30000;
+
+                response = await client.ExecuteAsync(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.ToString());
+            }
+
+            if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, UpdateProductCategoryDto dto)
+        {
+            var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
+            RestResponse response = null;
+            try
+            {
+                var request = new RestRequest($"api/app/productCategory/{id}", Method.Put)
+                    .AddJsonBody(dto)
+                    ;
+                //request.Timeout = 30000;
+
+                response = await client.ExecuteAsync(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.ToString());
+            }
+
+            if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
+            RestResponse response = null;
+            try
+            {
+                var request = new RestRequest($"api/app/productCategory/{id}", Method.Delete);
+                //request.Timeout = 30000;
+
+                response = await client.ExecuteAsync(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.ToString());
+            }
+
+            if (response != null && response.StatusCode.Equals(HttpStatusCode.NoContent) && response.Content.IsNullOrWhiteSpace())
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

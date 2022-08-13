@@ -60,7 +60,7 @@ namespace NamiMetal.WebManagement
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=ProductCategory}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

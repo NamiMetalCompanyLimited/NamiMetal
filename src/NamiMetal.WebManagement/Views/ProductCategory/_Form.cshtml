@@ -3,51 +3,54 @@
 @using Newtonsoft.Json
 @model ProductCategoryDto
 @functions {
-    public string GenerateCategorySelectOptions(ProductCategoryDto item, int level)
-    {
-        var html = @"<option value="""+ item.Id +@""" " + (Model.ParentId.Equals(item.Id) ? "selected" : "") + ">" + "&#160;" + item.Name + @"</option>";
-        if (item.Childrens != null && item.Childrens.Count() > 0)
-        {
-            level++;
-            foreach (var child in item.Childrens)
-            {
-                html += GenerateCategorySelectOptions(child, level);
-            }
-        }
-        return html;
-    }
+    //public string GenerateCategorySelectOptions(ProductCategoryDto item, int level)
+    //{
+    //    var html = @"<option value=""" + item.Id + @""" " + (Model.ParentId.Equals(item.Id) ? "selected" : "") + ">"
+    //    + (level > 1 ? "&#x251c;" + string.Concat(Enumerable.Repeat("&#x2500;", level)) : "")
+    //    + item.Name + @"</option>";
+    //    if (item.Childrens != null && item.Childrens.Count() > 0)
+    //    {
+    //        level++;
+    //        foreach (var child in item.Childrens)
+    //        {
+    //            html += GenerateCategorySelectOptions(child, level);
+    //        }
+    //    }
+    //    return html;
+    //}
 }
 <div class="modal-header">
     <h5 class="modal-title" id="detailModelTitle">@(Model.Id.Equals(Guid.Empty) ? "Thêm mới" : "Cập nhật") danh mục sản phẩm</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
 </div>
 <div class="modal-body">
-    <form>
+    <form id="detailsForm">
         <div class="form-group">
             <label for="pcId">Id</label>
-            <input type="text" readonly class="form-control" id="pcId" placeholder="" value="@Html.Raw(Model.Id.Equals(Guid.Empty) ? "" : Model.Id)" />
+            <input type="text" readonly class="form-control" id="pcId" name="@Html.NameFor(x => x.Id)" placeholder="" value="@Html.Raw(Model.Id.Equals(Guid.Empty) ? "" : Model.Id)" />
         </div>
         <div class="form-group">
             <label for="pcParentId">Danh mục cha</label>
-            <select class="form-select" id="pcParentId">
+            <select class="form-select" id="pcParentId" name="@Html.NameFor(x => x.ParentId)">
                 <option value="" selected>--Chọn danh mục cha--</option>
-                @foreach(var category in (ViewBag.ParentProductCategories ?? new PagedResultDto<ProductCategoryDto>()).Items)
+                @foreach (ProductCategoryDto category in (ViewBag.ParentProductCategories ?? new PagedResultDto<ProductCategoryDto>()).Items)
                 {
-                    @Html.Raw(GenerateCategorySelectOptions(category, 1))
+                    @*@Html.Raw(GenerateCategorySelectOptions(category, 1))*@
+                    <option value="@Html.Raw(category.Id)" selected="@(Model.ParentId.Equals(category.Id))">@Html.Raw(category.Name)</option>
                 }
             </select>
         </div>
         <div class="form-group">
             <label for="pcName">Tên danh mục</label>
-            <input type="text" class="form-control" id="pcName" placeholder="Tên danh mục" value="@Html.Raw(Model.Name)">
+            <input type="text" class="form-control" id="pcName" name="@Html.NameFor(x => x.Name)" placeholder="Tên danh mục" value="@Html.Raw(Model.Name)">
         </div>
         <div class="form-group">
             <label for="pcDescription">Mô tả</label>
-            <textarea class="form-control" id="pcDescription" placeholder="Mô tả danh mục">@Html.Raw(Model.Description)</textarea>
+            <textarea class="form-control" id="pcDescription" name="@Html.NameFor(x => x.Description)" placeholder="Mô tả danh mục">@Html.Raw(Model.Description)</textarea>
         </div>
         <div class="form-group">
             <label for="pcActive">Trạng thái</label>
-            <select class="form-select" id="pcActive">
+            <select class="form-select" id="pcActive" name="@Html.NameFor(x => x.Active)">
                 <option value="true" selected>Đang sử dụng</option>
                 <option value="false">Không sử dụng</option>
             </select>
@@ -55,5 +58,6 @@
     </form>
 </div>
 <div class="modal-footer">
+    <button type="button" class="btn btn-primary" onclick="saveForm.call($('#detailsForm')[0], { id: '@Html.Raw(Model.Id.Equals(Guid.Empty) ? "" : Model.Id)' });">Lưu</button>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
 </div>

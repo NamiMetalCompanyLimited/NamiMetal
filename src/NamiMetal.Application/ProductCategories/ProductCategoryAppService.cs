@@ -33,10 +33,40 @@ namespace NamiMetal.ProductCategories
         //    _productCategoryRepository = productCategoryRepository;
         //}
 
-        public override async Task<ProductCategoryDto> GetAsync([NotNull] Guid id)
-         => ObjectMapper.Map<ProductCategory, ProductCategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens))
-             .Where(x => x.Id.Equals(id))
-             .FirstOrDefault());
+        public override async Task<ProductCategoryDto> CreateAsync(CreateProductCategoryDto input)
+        {
+            if(input.ParentId.HasValue)
+            {
+                var parent = await GetAsync(input.ParentId.Value);
+                input.Path = $"{parent.Path}/{parent.Id}";
+            }
+            else
+            {
+                input.Path = null;
+            }
+
+            return await base.CreateAsync(input);
+        }
+
+        public override async Task<ProductCategoryDto> UpdateAsync(Guid id, UpdateProductCategoryDto input)
+        {
+            if (input.ParentId.HasValue)
+            {
+                var parent = await GetAsync(input.ParentId.Value);
+                input.Path = $"{parent.Path}/{parent.Id}";
+            }
+            else
+            {
+                input.Path = null;
+            }
+
+            return await base.UpdateAsync(id, input);
+        }
+
+        //public override async Task<ProductCategoryDto> GetAsync([NotNull] Guid id)
+        // => ObjectMapper.Map<ProductCategory, ProductCategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens))
+        //     .Where(x => x.Id.Equals(id))
+        //     .FirstOrDefault());
 
         public override async Task<PagedResultDto<ProductCategoryDto>> GetListAsync(SearchProductCategoryDto input)
         {
@@ -46,13 +76,10 @@ namespace NamiMetal.ProductCategories
             }
 
             //Check currentPage
-            if (input.SkipCount <= 0)
+            if (input.SkipCount < 0)
             {
-                input.SkipCount = 1;
+                input.SkipCount = 0;
             }
-
-            int skipCount = input.SkipCount;
-            input.SkipCount = (input.SkipCount - 1) * input.MaxResultCount;
 
             var query = await CreateFilteredQueryAsync(input);
 
@@ -71,17 +98,16 @@ namespace NamiMetal.ProductCategories
                 query = query.Where(x => x.Active.Equals(input.Active.Value));
             }
 
-            //var totalCount = await AsyncExecuter.CountAsync(query);
+            var totalCount = await AsyncExecuter.CountAsync(query);
 
             query = ApplySorting(query, input);
             query = ApplyPaging(query, input);
 
             var entities = await AsyncExecuter.ToListAsync(query);
-            entities = entities.Where(x => x.ParentId.Equals(null) || x.ParentId.Equals(Guid.Empty)).ToList();
             var entityDtos = await MapToGetListOutputDtosAsync(entities);
+
             return new PagedResultDto<ProductCategoryDto>(
-                //totalCount,
-                entityDtos.Count(),
+                totalCount,
                 entityDtos
             );
         }
