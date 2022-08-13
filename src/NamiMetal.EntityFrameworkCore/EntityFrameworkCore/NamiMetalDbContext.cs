@@ -18,7 +18,6 @@ public class NamiMetalDbContext :
     public NamiMetalDbContext(DbContextOptions<NamiMetalDbContext> options)
         : base(options)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -51,10 +50,11 @@ public class NamiMetalDbContext :
             //e.Property<Guid>(nameof(Category.DeleterId));
             //e.Property<DateTime>(nameof(Category.DeletionTime));
             e.HasMany(d => d.Childrens)
-            .WithOne(c => c.Parent)
-            .HasForeignKey(d => d.ParentId)
             //.HasConstraintName("FK_ProductCategory_ProductCategory")
             ;
+
+            e.Ignore(x => x.Parent);
+            e.Ignore(x => x.Childrens);
         });
 
         builder.Entity<Collection>(e =>

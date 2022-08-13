@@ -7,6 +7,9 @@ namespace NamiMetal.ProductCategories
     {
         public Guid? ParentId { get; set; }
 
+        [StringLength(1000)]
+        public string Path { get; set; }
+
         [Required]
         [StringLength(100)]
         public string Name { get; set; }

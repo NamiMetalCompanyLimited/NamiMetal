@@ -3,8 +3,8 @@
 }
 
 @section Styles {
-    <style type="text/css">
-    </style>
+<style type="text/css">
+</style>
 }
 
 <div class="page-heading">
@@ -43,7 +43,7 @@
                         <div class="row">
                             <div class="col-md-3 col-12">
                                 <div class="form-group">
-                                    <label for="school-name-column">Tên</label>
+                                    <label for="searchName">Tên</label>
                                     <div class="position-relative">
                                         <input type="text" id="searchName" class="form-control"
                                                placeholder="Nhập danh mục muốn tìm" name="school-name">
@@ -52,29 +52,29 @@
                             </div>
                             <div class="col-md-3 col-12">
                                 <div class="form-group has-icon-left">
-                                    <label for="school-name-column">Trạng thái</label>
+                                    <label for="searchStatus">Trạng thái</label>
                                     <div class="position-relative">
                                         <select class="form-select" id="searchStatus">
                                             <option value="" selected>--Chọn trạng thái--</option>
-                                            <option value="true">Đang sử dụng</option>
-                                            <option value="false">Không sử dụng</option>
+                                            <option value="1">Đang sử dụng</option>
+                                            <option value="0">Không sử dụng</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-12">
                                 <div class="form-group">
-                                    <label for="school-name-column">Thời gian tạo</label>
+                                    <label for="searchCreationTime">Thời gian tạo</label>
                                     <div class="position-relative">
-                                        <input type="date" id="creationTime" class="form-control">
+                                        <input type="date" id="searchCreationTime" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3 col-12">
                                 <div class="form-group">
-                                    <label for="school-name-column">Cập nhật lần cuối</label>
+                                    <label for="searchLastModificationTime">Cập nhật lần cuối</label>
                                     <div class="position-relative">
-                                        <input type="date" id="lastModificationTime" class="form-control">
+                                        <input type="date" id="searchLastModificationTime" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -101,8 +101,11 @@
     <section class="section">
         <div class="card border">
             <div class="card-header d-flex align-items-center">
-                <h4 class="card-title m-0">Danh sách hóa đơn</h4>
+                <div class="d-flex justify-content-between w-100">
+                    <h4 class="card-title m-0">Danh sách danh mục</h4>
+                    <button type="button" class="btn btn-primary" onclick="openForm({ id: '@Html.Raw(Guid.Empty)' })">Thêm mới</button>
                 </div>
+            </div>
             @*<div class="card-body"></div>*@
             <div id="dataTable" style="min-height: 100px;">
             </div>
@@ -113,16 +116,6 @@
 <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" style="max-width: 90%;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi tiết hoá đơn</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            </div>
-            @*<div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                </div>*@
         </div>
     </div>
 </div>
@@ -130,11 +123,10 @@
 @section Scripts {
 <script type="text/javascript">
     let $dataTable;
-    let $searchForm;
-    let $searchSOCode;
-    let $searchSellerTaxCode;
-    let $searchInvoiceNo;
-    let $searchStatus;
+    let $searchName;
+    let $searchActive;
+    let $searchCreationTime;
+    let $searchLastModificationTime;
     let $detailModal;
     let detailModalInstance;
     let SkipCount = 1;
@@ -144,12 +136,16 @@
 
     $(document).ready(function() {
         $dataTable = $("#dataTable");
+        $searchName = $("#searchName");
+        $searchActive = $("#searchStatus");
+        $searchCreationTime = $("#searchCreationTime");
+        $searchLastModificationTime = $("#searchLastModificationTime");
 
         $searchForm = $("#searchForm");
         $detailModal = $("#detailModal");
         detailModalInstance = new bootstrap.Modal(document.getElementById('detailModal'), {
             backdrop: 'static',
-            keyboard: false,
+            keyboard: true,
         });
 
         $detailModal.on("hide.bs.modal", function(e) {
@@ -157,7 +153,7 @@
             detailAjaxInstance = null;
         });
 
-        $(document).unbind().on("submit", "form", function(e) {
+        $(document).unbind().on("submit", "#searchForm", function(e) {
             e.preventDefault();
 
             getPaging({ index: 1 });
@@ -175,7 +171,11 @@
 
         let payload = {
             SkipCount,
-            MaxResultCount
+            MaxResultCount,
+            Name: $.trim($searchName.val()).length > 0 ? $.trim($searchName.val()) : "",
+            Active: $.trim($searchActive.val()).length > 0 ? $.trim($searchActive.val()) : "",
+            CreationTime: $.trim($searchCreationTime.val()).length > 0 ? $.trim($searchCreationTime.val()) : "",
+            LastModificationTime: $.trim($searchLastModificationTime.val()).length > 0 ? $.trim($searchLastModificationTime.val()) : "",
         };
 
         pagingAjaxInstance = $.ajax({
@@ -206,23 +206,59 @@
             });
     }
 
-
-    function getInvoiceDetail({ SOCode, SellerTaxCode }) {
-        detailModalInstance.show();
-
+    function openForm({ id }) {
         detailAjaxInstance = $.ajax({
-            url: `/Invoice/GetInvoiceDetails`,
+            url: `ProductCategory/${id}`,
             method: "GET",
-            data: {
-                SOCode,
-                SellerTaxCode,
-            },
             beforeSend: () => {
-                //$detailModal.FLoading("show");
-                $detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
+                $("#main").FLoading("show");
+                //$detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
             },
             success: result => {
-                $detailModal.find(".modal-body").empty().append(result);
+                $detailModal.find(".modal-content").empty().append(result);
+                detailModalInstance.show();
+            }
+        })
+            .always(() => {
+                $("#main").FLoading("hide");
+            });
+    }
+
+    function saveForm({ id }) {
+        $.ajax({
+            url: id.length > 0 ? `ProductCategory/${id}` : `ProductCategory`,
+            method: id.length > 0 ? "PUT" : "POST",
+            data: $(this).serialize(),
+            beforeSend: () => {
+                //$detailModal.FLoading("show");
+                //$detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
+            },
+            success: result => {
+                detailModalInstance.hide();
+                getPaging();
+            },
+            error: error => {
+                alert("Lỗi không thực hiện được thao tác");
+            }
+        })
+            .always(() => {
+                //$detailModal.FLoading("hide");
+            });
+    }
+
+    function deleteItem({ id }) {
+        $.ajax({
+            url: `ProductCategory/${id}`,
+            method: "DELETE",
+            beforeSend: () => {
+                //$detailModal.FLoading("show");
+                //$detailModal.find(".modal-body").empty().append("Đang tải dữ liệu...");
+            },
+            success: result => {
+                getPaging();
+            },
+            error: error => {
+                alert("Lỗi không thực hiện được thao tác");
             }
         })
             .always(() => {

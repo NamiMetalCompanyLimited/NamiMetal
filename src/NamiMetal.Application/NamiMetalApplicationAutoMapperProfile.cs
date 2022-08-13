@@ -12,11 +12,15 @@ public class NamiMetalApplicationAutoMapperProfile : Profile
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
         CreateMap<ProductCategory, ProductCategoryDto>()
-            .ForMember(dest => dest.Parent, opt => opt.Ignore())
+            //.ForMember(dest => dest.Parent, opt => opt.Ignore())
             .ReverseMap()
             ;
 
         CreateMap<CreateProductCategoryDto, ProductCategory>()
+            .ReverseMap()
+            ;
+
+        CreateMap<UpdateProductCategoryDto, ProductCategory>()
             .ReverseMap()
             ;
     }
