@@ -8,7 +8,8 @@ namespace NamiMetal.ProductCategories
     {
         public Guid? ParentId { get; set; }
         public ProductCategoryDto Parent { get; set; }
-        public virtual ICollection<ProductCategoryDto> Childrens { get; set; }
+        public string Path { get; set; }
+        public ICollection<ProductCategoryDto> Childrens { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public bool Active { get; set; }

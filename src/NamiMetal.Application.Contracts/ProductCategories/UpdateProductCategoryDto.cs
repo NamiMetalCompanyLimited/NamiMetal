@@ -5,7 +5,10 @@ namespace NamiMetal.ProductCategories
 {
     public class UpdateProductCategoryDto
     {
-        public Guid ParentId { get; set; }
+        public Guid? ParentId { get; set; }
+
+        [StringLength(1000)]
+        public string Path { get; set; }
 
         [Required]
         [StringLength(250)]

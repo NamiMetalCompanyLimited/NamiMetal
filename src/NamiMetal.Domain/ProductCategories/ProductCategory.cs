@@ -14,6 +14,8 @@ namespace NamiMetal.ProductCategories
 
         public virtual Guid? ParentId { get; set; }
 
+        public virtual string Path { get; set; }
+
         public virtual ProductCategory Parent { get; set; }
 
         public virtual string Name { get; set; }

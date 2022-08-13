@@ -8,6 +8,7 @@ using NamiMetal.EntityFrameworkCore;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Serilog;
@@ -34,7 +35,10 @@ public class NamiMetalHttpApiHostModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
-
+        //context.Services.AddControllersWithViews().AddJsonOptions(options =>
+        //{
+        //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        //});
         ConfigureConventionalControllers();
         //ConfigureAuthentication(context, configuration);
         ConfigureLocalization();
