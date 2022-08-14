@@ -179,7 +179,7 @@
         };
 
         pagingAjaxInstance = $.ajax({
-            url: `ProductCategory/DataGrid`,
+            url: `Category/DataGrid`,
             method: "GET",
             data: payload,
             beforeSend: () => {
@@ -208,7 +208,7 @@
 
     function openForm({ id }) {
         detailAjaxInstance = $.ajax({
-            url: `ProductCategory/${id}`,
+            url: `Category/${id}`,
             method: "GET",
             beforeSend: () => {
                 $("#main").FLoading("show");
@@ -226,7 +226,7 @@
 
     function saveForm({ id }) {
         $.ajax({
-            url: id.length > 0 ? `ProductCategory/${id}` : `ProductCategory`,
+            url: id.length > 0 ? `Category/${id}` : `Category`,
             method: id.length > 0 ? "PUT" : "POST",
             data: $(this).serialize(),
             beforeSend: () => {
@@ -248,7 +248,7 @@
 
     function deleteItem({ id }) {
         $.ajax({
-            url: `ProductCategory/${id}`,
+            url: `Category/${id}`,
             method: "DELETE",
             beforeSend: () => {
                 //$detailModal.FLoading("show");

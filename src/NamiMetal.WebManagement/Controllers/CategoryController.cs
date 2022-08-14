@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace NamiMetal.WebManagement.Controllers
 {
-    [Route("ProductCategory")]
+    [Route("Category")]
     public class CategoryController : Controller
     {
         private readonly ILogger<CategoryController> _logger;
