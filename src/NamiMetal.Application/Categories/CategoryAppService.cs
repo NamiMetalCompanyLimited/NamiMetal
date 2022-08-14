@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace NamiMetal.Categories
 {
-    public class ProductCategoryAppService :
+    public class CategoryAppService :
         CrudAppService<
             Category,
             CategoryDto,
@@ -20,17 +20,17 @@ namespace NamiMetal.Categories
         //ApplicationService,
         ICategoryAppService
     {
-        public ProductCategoryAppService(IRepository<Category, Guid> repository) : base(repository)
+        public CategoryAppService(IRepository<Category, Guid> repository) : base(repository)
         {
             LocalizationResource = typeof(NamiMetalResource);
         }
 
-        //protected readonly IProductCategoryRepository _productCategoryRepository;
+        //protected readonly ICategoryRepository _categoryRepository;
 
-        //public ProductCategoryAppService(IProductCategoryRepository productCategoryRepository)
+        //public CategoryAppService(ICategoryRepository categoryRepository)
         //{
         //    LocalizationResource = typeof(NamiMetalResource);
-        //    _productCategoryRepository = productCategoryRepository;
+        //    _categoryRepository = categoryRepository;
         //}
 
         public override async Task<CategoryDto> CreateAsync(CreateCategoryDto input)
@@ -63,8 +63,8 @@ namespace NamiMetal.Categories
             return await base.UpdateAsync(id, input);
         }
 
-        //public override async Task<ProductCategoryDto> GetAsync([NotNull] Guid id)
-        // => ObjectMapper.Map<ProductCategory, ProductCategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens))
+        //public override async Task<CategoryDto> GetAsync([NotNull] Guid id)
+        // => ObjectMapper.Map<Category, CategoryDto>((await ReadOnlyRepository.WithDetailsAsync(x => x.Childrens))
         //     .Where(x => x.Id.Equals(id))
         //     .FirstOrDefault());
 
