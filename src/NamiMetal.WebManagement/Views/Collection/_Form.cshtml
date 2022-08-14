@@ -1,0 +1,50 @@
+﻿@using NamiMetal.Collections
+@model CollectionDto
+@functions {
+    //public string GenerateCategorySelectOptions(ProductCategoryDto item, int level)
+    //{
+    //    var html = @"<option value=""" + item.Id + @""" " + (Model.ParentId.Equals(item.Id) ? "selected" : "") + ">"
+    //    + (level > 1 ? "&#x251c;" + string.Concat(Enumerable.Repeat("&#x2500;", level)) : "")
+    //    + item.Name + @"</option>";
+    //    if (item.Childrens != null && item.Childrens.Count() > 0)
+    //    {
+    //        level++;
+    //        foreach (var child in item.Childrens)
+    //        {
+    //            html += GenerateCategorySelectOptions(child, level);
+    //        }
+    //    }
+    //    return html;
+    //}
+}
+<div class="modal-header">
+    <h5 class="modal-title" id="detailModelTitle">@(Model.Id.Equals(Guid.Empty) ? "Thêm mới" : "Cập nhật") bộ sưu tập</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+</div>
+<div class="modal-body">
+    <form id="detailsForm">
+        <div class="form-group">
+            <label for="pcId">Id</label>
+            <input type="text" readonly class="form-control" id="pcId" name="@Html.NameFor(x => x.Id)" placeholder="" value="@Html.Raw(Model.Id.Equals(Guid.Empty) ? "" : Model.Id)" />
+        </div>
+        <div class="form-group">
+            <label for="pcName">Tên bộ sưu tập</label>
+            <input type="text" class="form-control" id="pcName" name="@Html.NameFor(x => x.Name)" placeholder="Tên bộ sưu tập" value="@Html.Raw(Model.Name)">
+        </div>
+        <div class="form-group">
+            <label for="pcDescription">Mô tả</label>
+            <textarea class="form-control" id="pcDescription" name="@Html.NameFor(x => x.Description)" placeholder="Mô tả bộ sưu tập">@Html.Raw(Model.Description)</textarea>
+        </div>
+        <div class="form-group">
+            <label for="pcActive">Trạng thái</label>
+            <select class="form-select" id="pcActive" name="@Html.NameFor(x => x.Active)">
+                <option value="true" selected>Đang sử dụng</option>
+                <option value="false">Không sử dụng</option>
+            </select>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" onclick="saveForm.call($('#detailsForm')[0], { id: '@Html.Raw(Model.Id.Equals(Guid.Empty) ? "" : Model.Id)' });">Lưu</button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+</div>

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NamiMetal.Application.Dtos;
-using NamiMetal.Categories;
+using NamiMetal.Collections;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace NamiMetal.WebManagement.Controllers
 {
-    [Route("Category")]
-    public class CategoryController : Controller
+    [Route("Collection")]
+    public class CollectionController : Controller
     {
-        private readonly ILogger<CategoryController> _logger;
+        private readonly ILogger<CollectionController> _logger;
         private readonly RemoteServiceOptions _remoteServiceOptions;
 
-        public CategoryController(ILogger<CategoryController> logger,
+        public CollectionController(ILogger<CollectionController> logger,
             IOptions<RemoteServiceOptions> remoteServiceOptions)
         {
             _logger = logger;
@@ -32,12 +32,7 @@ namespace NamiMetal.WebManagement.Controllers
         }
 
         [HttpGet("DataGrid")]
-        public async Task<IActionResult> DataGridAsync(SearchCategoryDto input)
-        {
-            return PartialView("_DataGrid", await GetPagingProductCategories(input));
-        }
-
-        private async Task<PagedResultDto<CategoryDto>> GetPagingProductCategories(SearchCategoryDto input)
+        public async Task<IActionResult> DataGridAsync(SearchCollectionDto input)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
@@ -45,7 +40,7 @@ namespace NamiMetal.WebManagement.Controllers
             try
             {
                 input.SkipCount = (input.SkipCount - 1) * input.MaxResultCount;
-                var request = new RestRequest("api/app/category", Method.Get)
+                var request = new RestRequest("api/app/collection", Method.Get)
                     .AddObject(input)
                     ;
 
@@ -56,11 +51,11 @@ namespace NamiMetal.WebManagement.Controllers
                 _logger.LogError(ex, ex.ToString());
             }
 
-            PagedResultDto<CategoryDto> result = new PagedResultDto<CategoryDto>(0, new List<CategoryDto>());
+            PagedResultDto<CollectionDto> result = new PagedResultDto<CollectionDto>(0, new List<CollectionDto>());
 
             if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
             {
-                result = JsonConvert.DeserializeObject<PagedResultDto<CategoryDto>>(response.Content);
+                result = JsonConvert.DeserializeObject<PagedResultDto<CollectionDto>>(response.Content);
             }
 
             if (result != null)
@@ -69,21 +64,13 @@ namespace NamiMetal.WebManagement.Controllers
                 result.MaxResultCount = input.MaxResultCount;
             }
 
-            return result;
+            return PartialView("_DataGrid", result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Form(Guid id)
         {
-            CategoryDto result = new CategoryDto();
-
-            ViewBag.ParentProductCategories = await GetPagingProductCategories(new SearchCategoryDto
-            {
-                Active = true,
-                SkipCount = 1,
-                MaxResultCount = 999999,
-                Sorting = "CreationTime"
-            });
+            CollectionDto result = new CollectionDto();
 
             if (id.Equals(Guid.Empty))
             {
@@ -94,7 +81,7 @@ namespace NamiMetal.WebManagement.Controllers
             RestResponse response = null;
             try
             {
-                var request = new RestRequest($"api/app/category/{id}", Method.Get)
+                var request = new RestRequest($"api/app/collection/{id}", Method.Get)
                     ;
                 //request.Timeout = 30000;
 
@@ -108,20 +95,20 @@ namespace NamiMetal.WebManagement.Controllers
 
             if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
             {
-                result = JsonConvert.DeserializeObject<CategoryDto>(response.Content);
+                result = JsonConvert.DeserializeObject<CollectionDto>(response.Content);
             }
 
             return PartialView("_Form", result);
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> Create(CreateCategoryDto dto)
+        public async Task<IActionResult> Create(CreateCollectionDto dto)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
             try
             {
-                var request = new RestRequest("api/app/category/", Method.Post)
+                var request = new RestRequest("api/app/collection/", Method.Post)
                     .AddJsonBody(dto)
                     ;
 
@@ -143,13 +130,13 @@ namespace NamiMetal.WebManagement.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, UpdateCategoryDto dto)
+        public async Task<IActionResult> Update(Guid id, UpdateCollectionDto dto)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
             try
             {
-                var request = new RestRequest($"api/app/category/{id}", Method.Put)
+                var request = new RestRequest($"api/app/collection/{id}", Method.Put)
                     .AddJsonBody(dto)
                     ;
 
@@ -177,7 +164,7 @@ namespace NamiMetal.WebManagement.Controllers
             RestResponse response = null;
             try
             {
-                var request = new RestRequest($"api/app/category/{id}", Method.Delete);
+                var request = new RestRequest($"api/app/collection/{id}", Method.Delete);
 
                 response = await client.ExecuteAsync(request);
             }

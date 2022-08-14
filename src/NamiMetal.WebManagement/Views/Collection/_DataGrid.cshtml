@@ -1,11 +1,11 @@
 ﻿@using NamiMetal.Application.Dtos
-@using NamiMetal.Categories
-@model PagedResultDto<CategoryDto>
+@using NamiMetal.Collections
+@model PagedResultDto<CollectionDto>
 @{
     int orderNum = (Model.SkipCount - 1) * Model.MaxResultCount + 1;
 }
 @functions {
-    //public string GenerateCategoryTableRow(CategoryDto item, int level)
+    //public string GenerateCategoryTableRow(ProductCategoryDto item, int level)
     //{
     //    var html = @"<tr>
     //            <td align='center'>" + (level == 1 ? Model.OrderNum++ : "") + @"</td>
@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var category in (Model.Items ?? new List<CategoryDto>()))
+            @foreach (var category in (Model.Items ?? new List<CollectionDto>()))
             {
                 @*@Html.Raw(GenerateCategoryTableRow(category, 1))*@
                 <tr>
