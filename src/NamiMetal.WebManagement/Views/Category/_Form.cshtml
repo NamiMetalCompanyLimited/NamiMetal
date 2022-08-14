@@ -1,7 +1,7 @@
 ﻿@using NamiMetal.Application.Dtos
-@using NamiMetal.ProductCategories
+@using NamiMetal.Categories
 @using Newtonsoft.Json
-@model ProductCategoryDto
+@model CategoryDto
 @functions {
     //public string GenerateCategorySelectOptions(ProductCategoryDto item, int level)
     //{
@@ -33,7 +33,7 @@
             <label for="pcParentId">Danh mục cha</label>
             <select class="form-select" id="pcParentId" name="@Html.NameFor(x => x.ParentId)">
                 <option value="" selected>--Chọn danh mục cha--</option>
-                @foreach (ProductCategoryDto category in (ViewBag.ParentProductCategories ?? new PagedResultDto<ProductCategoryDto>()).Items)
+                @foreach (CategoryDto category in (ViewBag.ParentProductCategories ?? new PagedResultDto<CategoryDto>()).Items)
                 {
                     @*@Html.Raw(GenerateCategorySelectOptions(category, 1))*@
                     <option value="@Html.Raw(category.Id)" selected="@(Model.ParentId.Equals(category.Id))">@Html.Raw(category.Name)</option>

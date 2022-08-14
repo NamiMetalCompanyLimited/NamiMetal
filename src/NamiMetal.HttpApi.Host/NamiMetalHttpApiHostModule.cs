@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NamiMetal.EntityFrameworkCore;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -33,12 +34,21 @@ public class NamiMetalHttpApiHostModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        var cultureInfo = new CultureInfo("en-US");
+        //cultureInfo.NumberFormat.CurrencySymbol = "€";
+        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
         //context.Services.AddControllersWithViews().AddJsonOptions(options =>
         //{
         //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         //});
+        context.Services.Configure<RequestLocalizationOptions>(options =>
+        {
+            options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("vi-VN");
+        });
         ConfigureConventionalControllers();
         //ConfigureAuthentication(context, configuration);
         ConfigureLocalization();

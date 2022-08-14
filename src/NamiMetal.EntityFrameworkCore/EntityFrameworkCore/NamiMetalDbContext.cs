@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NamiMetal.ProductCategories;
+using NamiMetal.Categories;
 using NamiMetal.Collections;
 using Volo.Abp.Data;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,7 +12,7 @@ public class NamiMetalDbContext :
     AbpDbContext<NamiMetalDbContext>
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<Category> Categories { get; set; }
     public DbSet<Collection> Collections { get; set; }
 
     public NamiMetalDbContext(DbContextOptions<NamiMetalDbContext> options)
@@ -35,12 +35,12 @@ public class NamiMetalDbContext :
         //    //...
         //});
 
-        builder.Entity<ProductCategory>(e =>
+        builder.Entity<Category>(e =>
         {
-            e.ToTable(NamiMetalConsts.DbTablePrefix + nameof(ProductCategory), NamiMetalConsts.DbSchema);
+            e.ToTable(NamiMetalConsts.DbTablePrefix + nameof(Category), NamiMetalConsts.DbSchema);
             e.ConfigureByConvention();
-            e.Property<string>(nameof(ProductCategory.Name)).IsRequired().HasMaxLength(100);
-            e.Property<string>(nameof(ProductCategory.Description)).HasMaxLength(250);
+            e.Property<string>(nameof(Category.Name)).IsRequired().HasMaxLength(100);
+            e.Property<string>(nameof(Category.Description)).HasMaxLength(250);
             //e.Property<bool>(nameof(Category.Active)).HasMaxLength(50);
             //e.Property<Guid>(nameof(Category.CreatorId));
             //e.Property<DateTime>(nameof(Category.CreationTime));
@@ -50,7 +50,7 @@ public class NamiMetalDbContext :
             //e.Property<Guid>(nameof(Category.DeleterId));
             //e.Property<DateTime>(nameof(Category.DeletionTime));
             e.HasMany(d => d.Childrens)
-            //.HasConstraintName("FK_ProductCategory_ProductCategory")
+            //.HasConstraintName("FK_Category_Category")
             ;
 
             e.Ignore(x => x.Parent);

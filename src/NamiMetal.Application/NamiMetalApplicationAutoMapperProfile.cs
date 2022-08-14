@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using NamiMetal.ProductCategories;
+using NamiMetal.Categories;
 using System.Collections.Generic;
 
 namespace NamiMetal;
@@ -11,16 +11,16 @@ public class NamiMetalApplicationAutoMapperProfile : Profile
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
-        CreateMap<ProductCategory, ProductCategoryDto>()
+        CreateMap<Category, CategoryDto>()
             //.ForMember(dest => dest.Parent, opt => opt.Ignore())
             .ReverseMap()
             ;
 
-        CreateMap<CreateProductCategoryDto, ProductCategory>()
+        CreateMap<CreateCategoryDto, Category>()
             .ReverseMap()
             ;
 
-        CreateMap<UpdateProductCategoryDto, ProductCategory>()
+        CreateMap<UpdateCategoryDto, Category>()
             .ReverseMap()
             ;
     }

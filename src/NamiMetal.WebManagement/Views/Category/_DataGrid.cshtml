@@ -1,6 +1,6 @@
 ﻿@using NamiMetal.Application.Dtos
-@using NamiMetal.ProductCategories
-@model PagedResultDto<ProductCategoryDto>
+@using NamiMetal.Categories
+@model PagedResultDto<CategoryDto>
 @functions {
     //public string GenerateCategoryTableRow(ProductCategoryDto item, int level)
     //{
@@ -49,14 +49,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var category in (Model.Items ?? new List<ProductCategoryDto>()))
+            @foreach (var category in (Model.Items ?? new List<CategoryDto>()))
             {
                 @*@Html.Raw(GenerateCategoryTableRow(category, 1))*@
                 <tr>
                     <td align="center">@(Model.OrderNum++)</td>
-                    <td align="center"> @(category.Active ? "Đang" : "Không") sử dụng</td>
-                    <td align="center">@(category.CreationTime.ToString("HH:mm:ss dd/MM/yyyy"))</td>
-                    <td align="center">@(category.LastModificationTime?.ToString("HH:mm:ss dd/MM/yyyy"))</td>
+                    <td align="center"> @Html.Raw(category.Name)</td>
+                    <td align="center"> @Html.Raw(category.Active ? "Đang" : "Không") sử dụng</td>
+                    <td align="center">@Html.Raw(category.CreationTime.ToString("HH:mm:ss dd/MM/yyyy"))</td>
+                    <td align="center">@Html.Raw(category.LastModificationTime?.ToString("HH:mm:ss dd/MM/yyyy"))</td>
                     <td align="center">
                         <button type="button" class="btn btn-primary" onclick="openForm({ id: '@Html.Raw(category.Id)' })">
                             Cập nhật

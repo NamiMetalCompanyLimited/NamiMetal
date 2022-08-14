@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace NamiMetal.ProductCategories
+namespace NamiMetal.Categories
 {
-    public class UpdateProductCategoryDto
+    public class UpdateCategoryDto
     {
         public Guid? ParentId { get; set; }
 

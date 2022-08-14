@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 
-namespace NamiMetal.ProductCategories
+namespace NamiMetal.Categories
 {
-    public class ProductCategory : Entity<Guid>, IFullAuditedObject
+    public class Category : Entity<Guid>, IFullAuditedObject
     {
-        protected ProductCategory()
+        protected Category()
         {
-            Childrens = new List<ProductCategory>();
+            Childrens = new List<Category>();
         }
 
         public virtual Guid? ParentId { get; set; }
 
         public virtual string Path { get; set; }
 
-        public virtual ProductCategory Parent { get; set; }
+        public virtual Category Parent { get; set; }
 
         public virtual string Name { get; set; }
 
@@ -38,6 +38,6 @@ namespace NamiMetal.ProductCategories
 
         public virtual DateTime? DeletionTime { get; set; }
 
-        public virtual ICollection<ProductCategory> Childrens { get; set; }
+        public virtual ICollection<Category> Childrens { get; set; }
     }
 }

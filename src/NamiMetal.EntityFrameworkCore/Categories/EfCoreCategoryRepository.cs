@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
-namespace NamiMetal.ProductCategories
+namespace NamiMetal.Categories
 {
-    public class EfCoreProductCategoryRepository :
+    public class EfCoreCategoryRepository :
         EfCoreRepository<
             NamiMetalDbContext,
-            ProductCategory,
+            Category,
             Guid>,
-        IProductCategoryRepository
+        ICategoryRepository
     {
-        public EfCoreProductCategoryRepository(IDbContextProvider<NamiMetalDbContext> dbContextProvider) 
+        public EfCoreCategoryRepository(IDbContextProvider<NamiMetalDbContext> dbContextProvider) 
             : base(dbContextProvider)
         {
         }
