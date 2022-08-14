@@ -14,26 +14,16 @@ public class NamiMetalDbContext :
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Collection> Collections { get; set; }
+    public DbSet<Attributes.Attribute> Attributes { get; set; }
+    public DbSet<AttributeOptions.AttributeOption> AttributeOptions { get; set; }
 
     public NamiMetalDbContext(DbContextOptions<NamiMetalDbContext> options)
         : base(options)
     {
     }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
-        /* Include modules to your migration db context */
-
-        /* Configure your own tables/entities inside here */
-
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(NamiMetalConsts.DbTablePrefix + "YourEntities", NamiMetalConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
 
         builder.Entity<ProductCategory>(e =>
         {
@@ -61,9 +51,35 @@ public class NamiMetalDbContext :
         {
             e.ToTable(NamiMetalConsts.DbTablePrefix + nameof(Collection), NamiMetalConsts.DbSchema);
             e.ConfigureByConvention();
-            e.Property<string>(nameof(Collection.Name)).IsRequired().HasMaxLength(100);
-            e.Property<string>(nameof(Collection.Description)).HasMaxLength(250);
-            //e.Property<bool>(nameof(Collection.Active)).HasMaxLength(50);
+            e.Property(p => p.Name).IsRequired().HasMaxLength(250);
+            e.Property(p => p.Description).HasMaxLength(250);
         });
+
+        builder.Entity<Attributes.Attribute>(e =>
+        {
+            e.ToTable(NamiMetalConsts.DbTablePrefix + nameof(NamiMetal.Attributes.Attribute), NamiMetalConsts.DbSchema);
+            e.ConfigureByConvention();
+            e.Property(p => p.Name).IsRequired().HasMaxLength(100);
+            e.Property(p => p.Description).HasMaxLength(250);
+            //e.Ignore(c => c.Childrens);
+        });
+
+        builder.Entity<AttributeOptions.AttributeOption>(e =>
+        {
+            e.ToTable(NamiMetalConsts.DbTablePrefix + nameof(NamiMetal.AttributeOptions.AttributeOption), NamiMetalConsts.DbSchema);
+            e.ConfigureByConvention();
+            e.Property(p => p.Name).IsRequired().HasMaxLength(100);
+            e.Property(p => p.Description).HasMaxLength(250);
+            e.HasOne(c => c.Attribute)
+                .WithMany(c => c.Childrens)
+                .HasForeignKey(c => c.AttributeId);
+            ;
+        });
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.EnableSensitiveDataLogging();
     }
 }

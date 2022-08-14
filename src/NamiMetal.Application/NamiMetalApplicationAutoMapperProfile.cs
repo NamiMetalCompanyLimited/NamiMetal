@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using NamiMetal.ProductCategories;
-using System.Collections.Generic;
 
 namespace NamiMetal;
 
@@ -23,5 +22,32 @@ public class NamiMetalApplicationAutoMapperProfile : Profile
         CreateMap<UpdateProductCategoryDto, ProductCategory>()
             .ReverseMap()
             ;
+
+        #region Collection
+        CreateMap<Collections.CollectionDto, Collections.Collection>().ReverseMap();
+        CreateMap<Collections.CreateCollectionDto, Collections.Collection>().ReverseMap();
+        CreateMap<Collections.UpdateCollectionDto, Collections.Collection>().ReverseMap();
+        #endregion
+
+        #region Attribute - AttributeOption
+        CreateMap<Attributes.AttributeDto, Attributes.Attribute>()
+            .ForMember(dts => dts.Childrens, opts => opts.MapFrom(src => src.Childrens))
+            .ReverseMap()
+            ;
+        CreateMap<Attributes.CreateAttributeDto, Attributes.Attribute>().ReverseMap()
+            .ForMember(dts => dts.Childrens, opts => opts.MapFrom(src => src.Childrens))
+            .ReverseMap()
+            ;
+        CreateMap<Attributes.UpdateAttributeDto, Attributes.Attribute>().ReverseMap()
+            .ForMember(dts => dts.Childrens, opts => opts.MapFrom(src => src.Childrens))
+            .ReverseMap()
+            ;
+
+
+        CreateMap<AttributeOptions.AttributeOptionDto, AttributeOptions.AttributeOption>().ReverseMap();
+        CreateMap<AttributeOptions.CreateAttributeOptionDto, AttributeOptions.AttributeOption>().ReverseMap();
+        CreateMap<AttributeOptions.UpdateAttributeOptionDto, AttributeOptions.AttributeOption>().ReverseMap();
+
+        #endregion
     }
 }
