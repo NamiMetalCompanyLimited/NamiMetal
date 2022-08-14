@@ -34,19 +34,30 @@ public class NamiMetalApplicationAutoMapperProfile : Profile
             .ForMember(dts => dts.Childrens, opts => opts.MapFrom(src => src.Childrens))
             .ReverseMap()
             ;
-        CreateMap<Attributes.CreateAttributeDto, Attributes.Attribute>().ReverseMap()
+        CreateMap<Attributes.AttributeDto, Attributes.UpdateAttributeDto>()
             .ForMember(dts => dts.Childrens, opts => opts.MapFrom(src => src.Childrens))
             .ReverseMap()
             ;
-        CreateMap<Attributes.UpdateAttributeDto, Attributes.Attribute>().ReverseMap()
+        CreateMap<Attributes.CreateAttributeDto, Attributes.Attribute>()
+            .ForMember(dts => dts.Childrens, opts => opts.MapFrom(src => src.Childrens))
+            .ReverseMap()
+            ;
+        CreateMap<Attributes.UpdateAttributeDto, Attributes.Attribute>()
             .ForMember(dts => dts.Childrens, opts => opts.MapFrom(src => src.Childrens))
             .ReverseMap()
             ;
 
+        CreateMap<Attributes.UpdateAttributeDto, Attributes.UpdateAttributeDto>().ReverseMap()
+            .ForMember(dts => dts.Childrens, opts => opts.Ignore())
+            ;
 
+        CreateMap<AttributeOptions.AttributeOption, AttributeOptions.AttributeOption>();
         CreateMap<AttributeOptions.AttributeOptionDto, AttributeOptions.AttributeOption>().ReverseMap();
         CreateMap<AttributeOptions.CreateAttributeOptionDto, AttributeOptions.AttributeOption>().ReverseMap();
+        CreateMap<AttributeOptions.UpdateAttributeOptionDto, AttributeOptions.AttributeOptionDto>().ReverseMap();
         CreateMap<AttributeOptions.UpdateAttributeOptionDto, AttributeOptions.AttributeOption>().ReverseMap();
+        CreateMap<AttributeOptions.UpdateAttributeOptionDto, AttributeOptions.UpdateAttributeOptionDto>().ReverseMap();
+        CreateMap<AttributeOptions.UpdateAttributeOptionDto, AttributeOptions.CreateAttributeOptionDto>().ReverseMap();
 
         #endregion
     }

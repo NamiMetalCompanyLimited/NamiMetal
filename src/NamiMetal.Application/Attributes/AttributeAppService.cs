@@ -23,20 +23,13 @@ namespace NamiMetal.Attributes
             UpdateAttributeDto>,
         IAttributeAppService
     {
-        private readonly IAttributeRepository _attributeRepository;
         private readonly AttributeOptions.IAttributeOptionRepository _attributeOptionRepository;
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
         public AttributeAppService(
             IRepository<Attribute, Guid> repository,
-            IAttributeRepository attributeRepository,
-            IUnitOfWorkManager unitOfWorkManager,
             AttributeOptions.IAttributeOptionRepository attributeOptionRepository
         ) : base(repository)
         {
-            _attributeRepository = attributeRepository;
             _attributeOptionRepository = attributeOptionRepository;
-            _unitOfWorkManager = unitOfWorkManager;
-
         }
         protected override async Task<IQueryable<Attribute>> CreateFilteredQueryAsync(SearchAttributeDto input)
         {
@@ -59,6 +52,49 @@ namespace NamiMetal.Attributes
            ;
         }
 
+        public override async Task<AttributeDto> UpdateAsync(Guid id, UpdateAttributeDto input)
+        {
+            var oldObj = await GetAsync(id);
+            if (oldObj == null)
+            {
+                throw new UserFriendlyException($"Không tìm thấy Attribute {input?.Name}!");
+            }
+            else
+            {
+                var adds = ObjectMapper.Map<List<AttributeOptions.UpdateAttributeOptionDto>, List<AttributeOptions.AttributeOption>>(input.Childrens.Where(c => c.Id == Guid.Empty).ToList());
+                var upds = new List<AttributeOptions.AttributeOption>();
+                foreach (var chil in input.Childrens ?? new List<AttributeOptions.UpdateAttributeOptionDto>())
+                {
+                    if (chil.Id != Guid.Empty)
+                    {
+                        var old = oldObj.Childrens.FirstOrDefault(o => o.Id == chil.Id);
+                        old = ObjectMapper.Map(chil, old);
+                        upds.Add(ObjectMapper.Map<AttributeOptions.AttributeOptionDto, AttributeOptions.AttributeOption>(old));
+                    }
+                }
+
+                var UpDto = ObjectMapper.Map<AttributeDto, UpdateAttributeDto>(oldObj);
+                UpDto.Childrens = null;
+                var result = await base.UpdateAsync(id, UpDto);
+                foreach (var upd in upds)
+                {
+                    await _attributeOptionRepository.UpdateAsync(upd);
+                }
+                foreach (var ins in adds)
+                {
+                    ins.SetParentRelationship(id);
+                    await _attributeOptionRepository.InsertAsync(ins);
+                }
+                return await GetAsync(id);
+
+                //ObjectMapper.Map(input, oldObj);
+                //var updOldObj = await _attributeRepository.UpdateAsync(oldObj);
+                ////var rt = await GetAsync(id);
+                ////return rt;
+                //return ObjectMapper.Map<Attribute, AttributeDto>(updOldObj);
+            }
+
+        }
         //public async override Task<AttributeDto> UpdateAsync(Guid id, UpdateAttributeDto input)
         //{
         //    ////var srhOld = await GetAsync(id);

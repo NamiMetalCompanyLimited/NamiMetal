@@ -6,7 +6,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace NamiMetal.AttributeOptions
 {
-    public class AttributeOption : FullAuditedEntity<Guid>, IFullAuditedObject/*, IChildrenDomainEntity<Guid>*/
+    public class AttributeOption : FullAuditedEntity<Guid>, IFullAuditedObject, IChildrenDomainEntity<Guid>
     {
         protected AttributeOption()
         {
@@ -19,7 +19,7 @@ namespace NamiMetal.AttributeOptions
         //[Write(false)]
         public virtual Attributes.Attribute Attribute { get; set; }
 
-        //public void SetId(Guid id) => Id = id;
-        //public void SetParentRelationship(Guid id) => AttributeId = id;
+        public void SetId(Guid id) => Id = id;
+        public void SetParentRelationship(Guid id) => AttributeId = id;
     }
 }
