@@ -7,20 +7,20 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
-namespace NamiMetal.ProductCategories
+namespace NamiMetal.Categories
 {
     public class ProductCategoryAppService :
         CrudAppService<
-            ProductCategory,
-            ProductCategoryDto,
+            Category,
+            CategoryDto,
             Guid,
-            SearchProductCategoryDto,
-            CreateProductCategoryDto,
-            UpdateProductCategoryDto>,
+            SearchCategoryDto,
+            CreateCategoryDto,
+            UpdateCategoryDto>,
         //ApplicationService,
-        IProductCategoryAppService
+        ICategoryAppService
     {
-        public ProductCategoryAppService(IRepository<ProductCategory, Guid> repository) : base(repository)
+        public ProductCategoryAppService(IRepository<Category, Guid> repository) : base(repository)
         {
             LocalizationResource = typeof(NamiMetalResource);
         }
@@ -33,9 +33,9 @@ namespace NamiMetal.ProductCategories
         //    _productCategoryRepository = productCategoryRepository;
         //}
 
-        public override async Task<ProductCategoryDto> CreateAsync(CreateProductCategoryDto input)
+        public override async Task<CategoryDto> CreateAsync(CreateCategoryDto input)
         {
-            if(input.ParentId.HasValue)
+            if (input.ParentId.HasValue)
             {
                 var parent = await GetAsync(input.ParentId.Value);
                 input.Path = $"{parent.Path}/{parent.Id}";
@@ -48,7 +48,7 @@ namespace NamiMetal.ProductCategories
             return await base.CreateAsync(input);
         }
 
-        public override async Task<ProductCategoryDto> UpdateAsync(Guid id, UpdateProductCategoryDto input)
+        public override async Task<CategoryDto> UpdateAsync(Guid id, UpdateCategoryDto input)
         {
             if (input.ParentId.HasValue)
             {
@@ -68,7 +68,7 @@ namespace NamiMetal.ProductCategories
         //     .Where(x => x.Id.Equals(id))
         //     .FirstOrDefault());
 
-        public override async Task<PagedResultDto<ProductCategoryDto>> GetListAsync(SearchProductCategoryDto input)
+        public override async Task<PagedResultDto<CategoryDto>> GetListAsync(SearchCategoryDto input)
         {
             if (input.MaxResultCount <= 0)
             {
@@ -98,6 +98,20 @@ namespace NamiMetal.ProductCategories
                 query = query.Where(x => x.Active.Equals(input.Active.Value));
             }
 
+            if (input.CreationTime.HasValue)
+            {
+                var start = input.CreationTime.Value.Date;
+                var end = input.CreationTime.Value.AddDays(1).AddTicks(-1);
+                query = query.Where(x => x.CreationTime >= start && x.CreationTime <= end);
+            }
+
+            if (input.LastModificationTime.HasValue)
+            {
+                var start = input.LastModificationTime.Value.Date;
+                var end = input.LastModificationTime.Value.AddDays(1).AddTicks(-1);
+                query = query.Where(x => x.LastModificationTime.HasValue && (x.LastModificationTime.Value >= start && x.LastModificationTime.Value <= end));
+            }
+
             var totalCount = await AsyncExecuter.CountAsync(query);
 
             query = ApplySorting(query, input);
@@ -106,7 +120,7 @@ namespace NamiMetal.ProductCategories
             var entities = await AsyncExecuter.ToListAsync(query);
             var entityDtos = await MapToGetListOutputDtosAsync(entities);
 
-            return new PagedResultDto<ProductCategoryDto>(
+            return new PagedResultDto<CategoryDto>(
                 totalCount,
                 entityDtos
             );

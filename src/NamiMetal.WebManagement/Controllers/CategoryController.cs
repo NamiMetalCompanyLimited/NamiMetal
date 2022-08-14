@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NamiMetal.Application.Dtos;
-using NamiMetal.ProductCategories;
+using NamiMetal.Categories;
 using NamiMetal.WebManagement.Models;
 using Newtonsoft.Json;
 using RestSharp;
@@ -15,12 +15,12 @@ using System.Threading.Tasks;
 namespace NamiMetal.WebManagement.Controllers
 {
     [Route("ProductCategory")]
-    public class ProductCategoryController : Controller
+    public class CategoryController : Controller
     {
-        private readonly ILogger<ProductCategoryController> _logger;
+        private readonly ILogger<CategoryController> _logger;
         private readonly RemoteServiceOptions _remoteServiceOptions;
 
-        public ProductCategoryController(ILogger<ProductCategoryController> logger,
+        public CategoryController(ILogger<CategoryController> logger,
             IOptions<RemoteServiceOptions> remoteServiceOptions)
         {
             _logger = logger;
@@ -34,26 +34,21 @@ namespace NamiMetal.WebManagement.Controllers
         }
 
         [HttpGet("DataGrid")]
-        public async Task<IActionResult> DataGridAsync(SearchProductCategoryDto input)
+        public async Task<IActionResult> DataGridAsync(SearchCategoryDto input)
         {
             return PartialView("_DataGrid", await GetPagingProductCategories(input));
         }
 
-        private async Task<PagedResultDto<ProductCategoryDto>> GetPagingProductCategories(SearchProductCategoryDto input)
+        private async Task<PagedResultDto<CategoryDto>> GetPagingProductCategories(SearchCategoryDto input)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
             try
             {
+                input.SkipCount = (input.SkipCount - 1) * input.MaxResultCount;
                 var request = new RestRequest("api/app/productCategory", Method.Get)
+                    .AddObject(input)
                     ;
-                //request.Timeout = 30000;
-                request.AddQueryParameter(nameof(input.Sorting), input.Sorting);
-                request.AddQueryParameter(nameof(input.SkipCount), (input.SkipCount - 1) * input.MaxResultCount);
-                request.AddQueryParameter(nameof(input.MaxResultCount), input.MaxResultCount);
-                request.AddQueryParameter(nameof(input.Name), input.Name);
-                request.AddQueryParameter(nameof(input.Description), input.Description);
-                request.AddQueryParameter(nameof(input.Active), input.Active?.ToString());
 
                 response = await client.ExecuteAsync(request);
             }
@@ -62,15 +57,15 @@ namespace NamiMetal.WebManagement.Controllers
                 _logger.LogError(ex, ex.ToString());
             }
 
-            PagedResultDto<ProductCategoryDto> result = new PagedResultDto<ProductCategoryDto>
+            PagedResultDto<CategoryDto> result = new PagedResultDto<CategoryDto>
             {
-                Items = new List<ProductCategoryDto>(),
+                Items = new List<CategoryDto>(),
                 TotalCount = 0
             };
 
             if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
             {
-                result = JsonConvert.DeserializeObject<PagedResultDto<ProductCategoryDto>>(response.Content);
+                result = JsonConvert.DeserializeObject<PagedResultDto<CategoryDto>>(response.Content);
             }
 
             if (result != null)
@@ -85,9 +80,9 @@ namespace NamiMetal.WebManagement.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Form(Guid id)
         {
-            ProductCategoryDto result = new ProductCategoryDto();
+            CategoryDto result = new CategoryDto();
 
-            ViewBag.ParentProductCategories = await GetPagingProductCategories(new SearchProductCategoryDto
+            ViewBag.ParentProductCategories = await GetPagingProductCategories(new SearchCategoryDto
             {
                 Active = true,
                 SkipCount = 1,
@@ -118,14 +113,14 @@ namespace NamiMetal.WebManagement.Controllers
 
             if (response != null && response.StatusCode.Equals(HttpStatusCode.OK) && !response.Content.IsNullOrWhiteSpace())
             {
-                result = JsonConvert.DeserializeObject<ProductCategoryDto>(response.Content);
+                result = JsonConvert.DeserializeObject<CategoryDto>(response.Content);
             }
 
             return PartialView("_Form", result);
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> Create(CreateProductCategoryDto dto)
+        public async Task<IActionResult> Create(CreateCategoryDto dto)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
@@ -134,7 +129,6 @@ namespace NamiMetal.WebManagement.Controllers
                 var request = new RestRequest("api/app/productCategory/", Method.Post)
                     .AddJsonBody(dto)
                     ;
-                //request.Timeout = 30000;
 
                 response = await client.ExecuteAsync(request);
             }
@@ -154,7 +148,7 @@ namespace NamiMetal.WebManagement.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, UpdateProductCategoryDto dto)
+        public async Task<IActionResult> Update(Guid id, UpdateCategoryDto dto)
         {
             var client = new RestClient(_remoteServiceOptions.Default.BaseUrl);
             RestResponse response = null;
@@ -163,7 +157,6 @@ namespace NamiMetal.WebManagement.Controllers
                 var request = new RestRequest($"api/app/productCategory/{id}", Method.Put)
                     .AddJsonBody(dto)
                     ;
-                //request.Timeout = 30000;
 
                 response = await client.ExecuteAsync(request);
             }
@@ -190,7 +183,6 @@ namespace NamiMetal.WebManagement.Controllers
             try
             {
                 var request = new RestRequest($"api/app/productCategory/{id}", Method.Delete);
-                //request.Timeout = 30000;
 
                 response = await client.ExecuteAsync(request);
             }
