@@ -1,4 +1,5 @@
-﻿using Volo.Abp.AutoMapper;
+﻿using Volo.Abp.AspNetCore.ExceptionHandling;
+using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 
 namespace NamiMetal;
@@ -15,6 +16,12 @@ public class NamiMetalApplicationModule : AbpModule
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddMaps<NamiMetalApplicationModule>();
+        });
+
+        Configure<AbpExceptionHandlingOptions>(options =>
+        {
+            options.SendExceptionsDetailsToClients = true;
+            options.SendStackTraceToClients = false;
         });
     }
 }
