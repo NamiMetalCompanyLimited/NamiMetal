@@ -46,7 +46,7 @@ namespace NamiMetal.WebManagement.Controllers
             try
             {
                 input.SkipCount = (input.SkipCount - 1) * input.MaxResultCount;
-                var request = new RestRequest("api/app/productCategory", Method.Get)
+                var request = new RestRequest("api/app/category", Method.Get)
                     .AddObject(input)
                     ;
 
@@ -99,7 +99,7 @@ namespace NamiMetal.WebManagement.Controllers
             RestResponse response = null;
             try
             {
-                var request = new RestRequest($"api/app/productCategory/{id}", Method.Get)
+                var request = new RestRequest($"api/app/category/{id}", Method.Get)
                     ;
                 //request.Timeout = 30000;
 
@@ -126,7 +126,7 @@ namespace NamiMetal.WebManagement.Controllers
             RestResponse response = null;
             try
             {
-                var request = new RestRequest("api/app/productCategory/", Method.Post)
+                var request = new RestRequest("api/app/category/", Method.Post)
                     .AddJsonBody(dto)
                     ;
 
@@ -154,7 +154,7 @@ namespace NamiMetal.WebManagement.Controllers
             RestResponse response = null;
             try
             {
-                var request = new RestRequest($"api/app/productCategory/{id}", Method.Put)
+                var request = new RestRequest($"api/app/category/{id}", Method.Put)
                     .AddJsonBody(dto)
                     ;
 
@@ -182,7 +182,7 @@ namespace NamiMetal.WebManagement.Controllers
             RestResponse response = null;
             try
             {
-                var request = new RestRequest($"api/app/productCategory/{id}", Method.Delete);
+                var request = new RestRequest($"api/app/category/{id}", Method.Delete);
 
                 response = await client.ExecuteAsync(request);
             }

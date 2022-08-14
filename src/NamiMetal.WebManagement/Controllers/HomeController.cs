@@ -6,7 +6,7 @@ namespace NamiMetal.Controllers
     {
         public IActionResult Index()
         {
-            return Redirect("/ProductCategory");
+            return Redirect("/Category");
         }
     }
 }
