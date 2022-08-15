@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using NamiMetal.Localization;
+﻿using NamiMetal.Localization;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

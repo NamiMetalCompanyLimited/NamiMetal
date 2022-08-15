@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
 
@@ -19,9 +20,15 @@ public class NamiMetalEntityFrameworkCoreModule : AbpModule
     {
         context.Services.AddAbpDbContext<NamiMetalDbContext>(options =>
         {
-            /* Remove "includeAllEntities: true" to create
-             * default repositories only for aggregate roots */
             options.AddDefaultRepositories(includeAllEntities: true);
+            options.Entity<Attributes.Attribute>(opts =>
+            {
+                opts.DefaultWithDetailsFunc = (
+                q => q
+                    .Include(e => e.Childrens)
+                            //.ThenInclude(e => e.Attribute)
+                );
+            });
         });
 
         Configure<AbpDbContextOptions>(options =>

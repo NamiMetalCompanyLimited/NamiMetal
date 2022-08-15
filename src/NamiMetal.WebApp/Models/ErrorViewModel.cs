@@ -1,5 +1,3 @@
-using System;
-
 namespace NamiMetal.WebApp.Models
 {
     public class ErrorViewModel
