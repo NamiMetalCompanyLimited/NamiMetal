@@ -3,16 +3,15 @@ using System;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
-namespace NamiMetal.Categories
+namespace NamiMetal.Collections
 {
-    public class EfCoreCategoryRepository :
-        EfCoreRepository<
+    public class EfCoreCollectionRepository : EfCoreRepository<
             NamiMetalDbContext,
-            Category,
+            Collection,
             Guid>,
-        ICategoryRepository
+        ICollectionRepository
     {
-        public EfCoreCategoryRepository(IDbContextProvider<NamiMetalDbContext> dbContextProvider) 
+        public EfCoreCollectionRepository(IDbContextProvider<NamiMetalDbContext> dbContextProvider)
             : base(dbContextProvider)
         {
         }
